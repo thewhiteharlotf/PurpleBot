@@ -24,7 +24,7 @@ async def on_new_message(event):
             try:
                 await event.delete()
             except Exception:
-                await event.reply("I do not have DELETE permission in this chat")
+                await event.reply("Eu não tenho permissão DELETE neste chat")
                 sql.rm_from_blacklist(event.chat_id, snip.lower())
             break
 
@@ -38,7 +38,7 @@ async def on_add_black_list(addbl):
     for trigger in to_blacklist:
         sql.add_to_blacklist(addbl.chat_id, trigger.lower())
     await addbl.edit(
-        "Added {} triggers to the blacklist in the current chat".format(
+        "Adicionados {} gatilhos à lista negra no chat atual".format(
             len(to_blacklist)
         )
     )
@@ -47,12 +47,12 @@ async def on_add_black_list(addbl):
 @register(outgoing=True, pattern="^.listbl(?: |$)(.*)")
 async def on_view_blacklist(listbl):
     all_blacklisted = sql.get_chat_blacklist(listbl.chat_id)
-    OUT_STR = "Blacklists in the Current Chat:\n"
+    OUT_STR = "Listas negras no chat atual:\n"
     if len(all_blacklisted) > 0:
         for trigger in all_blacklisted:
             OUT_STR += f"`{trigger}`\n"
     else:
-        OUT_STR = "No BlackLists. Start Saving using `.addbl`"
+        OUT_STR = "Sem listas negras. Comece a salvar usando `.addbl`"
     if len(OUT_STR) > 4096:
         with io.BytesIO(str.encode(OUT_STR)) as out_file:
             out_file.name = "blacklist.text"
@@ -61,7 +61,7 @@ async def on_view_blacklist(listbl):
                 out_file,
                 force_document=True,
                 allow_cache=False,
-                caption="BlackLists in the Current Chat",
+                caption="Listas negras no chat atual",
                 reply_to=listbl,
             )
             await listbl.delete()
@@ -79,18 +79,18 @@ async def on_delete_blacklist(rmbl):
     for trigger in to_unblacklist:
         if sql.rm_from_blacklist(rmbl.chat_id, trigger.lower()):
             successful += 1
-    await rmbl.edit(f"Removed {successful} / {len(to_unblacklist)} from the blacklist")
+    await rmbl.edit(f"Removido {successful} / {len(to_unblacklist)} da lista negra")
 
 
 CMD_HELP.update(
     {
         "blacklist": ".listbl\
-    \nUso: Lists all active userbot blacklist in a chat.\
-    \n\n.addbl <keyword>\
-    \nUso: Saves the message to the 'blacklist keyword'.\
-    \nThe bot will delete to the message whenever 'blacklist keyword' is mentioned.\
-    \n\n.rmbl <keyword>\
-    \nUso: Stops the specified blacklist.\
-	\n btw you need permissions **Delete Messages** of admin."
+    \nUso: Lista todas as listas negras do userbot ativo em um chat.\
+    \n\n.addbl <palavra-chave>\
+    \nUso: Salva a mensagem na 'palavra-chave da lista negra'.\
+    \nO bot irá deletar a mensagem sempre que 'palavra-chave da lista negra' for mencionada.\
+    \n\n.rmbl <palavra-chave>\
+    \nUso: Para a lista negra especificada.\
+	\n a propósito, você precisa de permissões **Excluir mensagens** do administrador."
     }
 )

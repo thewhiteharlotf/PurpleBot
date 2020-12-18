@@ -40,7 +40,7 @@ async def on_snip_save(event):
     try:
         from userbot.modules.sql_helper.snips_sql import add_snip
     except AtrributeError:
-        await event.edit("`Running on Non-SQL mode!`")
+        await event.edit("`Executando em modo não-SQL!`")
         return
     keyword = event.pattern_match.group(1)
     string = event.text.partition(keyword)[2]
@@ -51,8 +51,8 @@ async def on_snip_save(event):
             await event.client.send_message(
                 BOTLOG_CHATID,
                 f"#SNIP\
-            \nKEYWORD: {keyword}\
-            \n\nThe following message is saved as the data for the snip, please do NOT delete it !!",
+            \nPALAVRA CHAVE: {keyword}\
+            \n\nA mensagem a seguir é salva como os dados do recorte, NÃO a exclua !!",
             )
             msg_o = await event.client.forward_messages(
                 entity=BOTLOG_CHATID, messages=msg, from_peer=event.chat_id, silent=True
@@ -60,17 +60,17 @@ async def on_snip_save(event):
             msg_id = msg_o.id
         else:
             await event.edit(
-                "`Saving snips with media requires the BOTLOG_CHATID to be set.`"
+                "`Salvar recortes com mídia requer que BOTLOG_CHATID seja definido.`"
             )
             return
     elif event.reply_to_msg_id and not string:
         rep_msg = await event.get_reply_message()
         string = rep_msg.text
-    success = "`Snip {} successfully. Use` **${}** `anywhere to get it`"
+    success = "`Recorte {} com sucesso. Use` **${}** `em qualquer lugar para obtê-lo`"
     if add_snip(keyword, string, msg_id) is False:
-        await event.edit(success.format("updated", keyword))
+        await event.edit(success.format("atualizado", keyword))
     else:
-        await event.edit(success.format("saved", keyword))
+        await event.edit(success.format("salvo", keyword))
 
 
 @register(outgoing=True, pattern="^.snips$")
@@ -79,14 +79,14 @@ async def on_snip_list(event):
     try:
         from userbot.modules.sql_helper.snips_sql import get_snips
     except AttributeError:
-        await event.edit("`Running on Non-SQL mode!`")
+        await event.edit("`Executando em modo não-SQL!`")
         return
 
-    message = "`No snips available right now.`"
+    message = "`Nenhum recorte disponível no momento.`"
     all_snips = get_snips()
     for a_snip in all_snips:
-        if message == "`No snips available right now.`":
-            message = "Available snips:\n"
+        if message == "`Nenhum recorte disponível no momento.`":
+            message = "Recortes disponíveis:\n"
             message += f"`${a_snip.snip}`\n"
         else:
             message += f"`${a_snip.snip}`\n"
@@ -100,26 +100,26 @@ async def on_snip_delete(event):
     try:
         from userbot.modules.sql_helper.snips_sql import remove_snip
     except AttributeError:
-        await event.edit("`Running on Non-SQL mode!`")
+        await event.edit("`Executando em modo não-SQL!`")
         return
     name = event.pattern_match.group(1)
     if remove_snip(name) is True:
-        await event.edit(f"`Successfully deleted snip:` **{name}**")
+        await event.edit(f"`Recorte excluído com sucesso:` **{name}**")
     else:
-        await event.edit(f"`Couldn't find snip:` **{name}**")
+        await event.edit(f"`Não foi possível encontrar recorte:` **{name}**")
 
 
 CMD_HELP.update(
     {
         "snips": "\
-$<snip_name>\
-\nUso: Gets the specified snip, anywhere.\
-\n\n.snip <name> <data> or reply to a message with .snip <name>\
-\nUso: Saves the message as a snip (global note) with the name. (Works with pics, docs, and stickers too!)\
+$<nome_do_recorte>\
+\nUso: Obtém o recorte especificado, em qualquer lugar.\
+\n\n.snip <nome> <dados> ou responda a uma mensagem com .snip <nome>\
+\nUso: Salva a mensagem como um recorte (nota global) com o nome. (Funciona com fotos, documentos e stickers também!)\
 \n\n.snips\
-\nUso: Gets all saved snips.\
-\n\n.remsnip <snip_name>\
-\nUso: Deletes the specified snip.\
+\nUso: Obtém todos os recortes salvos.\
+\n\n.remsnip <nome_do_recorte>\
+\nUso: Exclui o recorte especificado.\
 "
     }
 )

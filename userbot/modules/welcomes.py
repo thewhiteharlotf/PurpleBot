@@ -31,7 +31,7 @@ async def welcome_to_chat(event):
             chat = await event.get_chat()
             me = await event.client.get_me()
 
-            title = chat.title if chat.title else "this chat"
+            title = chat.title if chat.title else "Este chat"
             participants = await event.client.get_participants(chat)
             count = len(participants)
             mention = "[{}](tg://user?id={})".format(a_user.first_name, a_user.id)
@@ -87,7 +87,7 @@ async def save_welcome(event):
     try:
         from userbot.modules.sql_helper.welcome_sql import add_welcome_setting
     except AttributeError:
-        await event.edit("`Running on Non-SQL mode!`")
+        await event.edit("`Executando em modo não-SQL!`")
         return
     msg = await event.get_reply_message()
     string = event.pattern_match.group(1)
@@ -96,9 +96,9 @@ async def save_welcome(event):
         if BOTLOG_CHATID:
             await event.client.send_message(
                 BOTLOG_CHATID,
-                f"#WELCOME_NOTE\
+                f"#NOTA_BOASVINDAS\
             \nCHAT ID: {event.chat_id}\
-            \nThe following message is saved as the new welcome note for the chat, please do NOT delete it !!",
+            \nA mensagem a seguir é salva como a nova nota de boas-vindas para o chat, NÃO a exclua !!",
             )
             msg_o = await event.client.forward_messages(
                 entity=BOTLOG_CHATID, messages=msg, from_peer=event.chat_id, silent=True
@@ -106,17 +106,17 @@ async def save_welcome(event):
             msg_id = msg_o.id
         else:
             await event.edit(
-                "`Saving media as part of the welcome note requires the BOTLOG_CHATID to be set.`"
+                "`Salvar mídia como parte da nota de boas-vindas requer que BOTLOG_CHATID seja definido.`"
             )
             return
     elif event.reply_to_msg_id and not string:
         rep_msg = await event.get_reply_message()
         string = rep_msg.text
-    success = "`Welcome note {} for this chat.`"
+    success = "`Nota de boas vindas {} para este chat.`"
     if add_welcome_setting(event.chat_id, 0, string, msg_id) is True:
-        await event.edit(success.format("saved"))
+        await event.edit(success.format("salva"))
     else:
-        await event.edit(success.format("updated"))
+        await event.edit(success.format("atualizada"))
 
 
 @register(outgoing=True, pattern="^.checkwelcome$")
@@ -124,20 +124,20 @@ async def show_welcome(event):
     try:
         from userbot.modules.sql_helper.welcome_sql import get_current_welcome_settings
     except AttributeError:
-        await event.edit("`Running on Non-SQL mode!`")
+        await event.edit("`Executando em modo não-SQL!`")
         return
     cws = get_current_welcome_settings(event.chat_id)
     if not cws:
-        await event.edit("`No welcome message saved here.`")
+        await event.edit("`Nenhuma mensagem de boas-vindas salva aqui.`")
         return
     elif cws and cws.f_mesg_id:
         msg_o = await event.client.get_messages(
             entity=BOTLOG_CHATID, ids=int(cws.f_mesg_id)
         )
-        await event.edit("`I am currently welcoming new users with this welcome note.`")
+        await event.edit("`Atualmente, estou dando as boas-vindas a novos usuários com esta nota de boas-vindas.`")
         await event.reply(msg_o.message, file=msg_o.media)
     elif cws and cws.reply:
-        await event.edit("`I am currently welcoming new users with this welcome note.`")
+        await event.edit("`Atualmente, estou dando as boas-vindas a novos usuários com esta nota de boas-vindas.`")
         await event.reply(cws.reply)
 
 
@@ -146,25 +146,25 @@ async def del_welcome(event):
     try:
         from userbot.modules.sql_helper.welcome_sql import rm_welcome_setting
     except AttributeError:
-        await event.edit("`Running on Non-SQL mode!`")
+        await event.edit("`Executando em modo não-SQL!`")
         return
     if rm_welcome_setting(event.chat_id) is True:
-        await event.edit("`Welcome note deleted for this chat.`")
+        await event.edit("`Nota de boas-vindas excluída deste chat.`")
     else:
-        await event.edit("`Do I have a welcome note here ?`")
+        await event.edit("`Tenho uma nota de boas-vindas aqui?`")
 
 
 CMD_HELP.update(
     {
         "welcome": "\
-.setwelcome <welcome message> or reply to a message with .setwelcome\
-\nUso: Saves the message as a welcome note in the chat.\
-\n\nAvailable variables for formatting welcome messages :\
+.setwelcome <mensagem de boas-vindas> ou responda a uma mensagem com .setwelcome\
+\nUso: Salva a mensagem como nota de boas-vindas no chat.\
+\n\nVariáveis ​​disponíveis para formatar mensagens de boas-vindas :\
 \n`{mention}, {title}, {count}, {first}, {last}, {fullname}, {userid}, {username}, {my_first}, {my_fullname}, {my_last}, {my_mention}, {my_username}`\
 \n\n.checkwelcome\
-\nUso: Check whether you have a welcome note in the chat.\
+\nUso: Verifica se você tem uma nota de boas-vindas no chat.\
 \n\n.rmwelcome\
-\nUso: Deletes the welcome note for the current chat.\
+\nUso: Exclui a nota de boas-vindas do chat atual.\
 "
     }
 )

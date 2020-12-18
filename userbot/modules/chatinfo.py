@@ -25,14 +25,14 @@ from userbot.events import register
 
 @register(pattern=".chatinfo(?: |$)(.*)", outgoing=True)
 async def info(event):
-    await event.edit("`Analysing the chat...`")
+    await event.edit("`Analisando o chat...`")
     chat = await get_chatinfo(event)
     caption = await fetch_info(chat, event)
     try:
         await event.edit(caption, parse_mode="html")
     except Exception as e:
         print("Exception:", e)
-        await event.edit("`An unexpected error has occurred.`")
+        await event.edit("`Ocorreu um erro inesperado.`")
     return
 
 
@@ -57,15 +57,15 @@ async def get_chatinfo(event):
         try:
             chat_info = await event.client(GetFullChannelRequest(chat))
         except ChannelInvalidError:
-            await event.edit("`Invalid channel/group`")
+            await event.edit("`Canal/grupo inválido`")
             return None
         except ChannelPrivateError:
             await event.edit(
-                "`This is a private channel/group or I am banned from there`"
+                "`Este é um canal/grupo privado ou fui banido de lá`"
             )
             return None
         except ChannelPublicGroupNaError:
-            await event.edit("`Channel or supergroup doesn't exist`")
+            await event.edit("`Canal ou supergrupo não existe`")
             return None
         except (TypeError, ValueError) as err:
             await event.edit(str(err))
@@ -110,7 +110,7 @@ async def fetch_info(chat, event):
     creator_firstname = (
         msg_info.users[0].first_name
         if creator_valid and msg_info.users[0].first_name is not None
-        else "Deleted Account"
+        else "Conta deletada"
     )
     creator_username = (
         msg_info.users[0].username
@@ -128,7 +128,7 @@ async def fetch_info(chat, event):
     try:
         dc_id, location = get_input_location(chat.full_chat.chat_photo)
     except Exception as e:
-        dc_id = "Unknown"
+        dc_id = "Desconhecido"
         str(e)
 
     # this is some spaghetti I need to change
@@ -171,14 +171,14 @@ async def fetch_info(chat, event):
     bots_list = chat.full_chat.bot_info  # this is a list
     bots = 0
     supergroup = (
-        "<b>Yes</b>"
+        "<b>Sim</b>"
         if hasattr(chat_obj_info, "megagroup") and chat_obj_info.megagroup
-        else "No"
+        else "Não"
     )
     slowmode = (
-        "<b>Yes</b>"
+        "<b>Sim</b>"
         if hasattr(chat_obj_info, "slowmode_enabled") and chat_obj_info.slowmode_enabled
-        else "No"
+        else "Não"
     )
     slowmode_time = (
         chat.full_chat.slowmode_seconds
@@ -186,14 +186,14 @@ async def fetch_info(chat, event):
         else None
     )
     restricted = (
-        "<b>Yes</b>"
+        "<b>Sim</b>"
         if hasattr(chat_obj_info, "restricted") and chat_obj_info.restricted
-        else "No"
+        else "Não"
     )
     verified = (
-        "<b>Yes</b>"
+        "<b>Sim</b>"
         if hasattr(chat_obj_info, "verified") and chat_obj_info.verified
-        else "No"
+        else "Não"
     )
     username = "@{}".format(username) if username else None
     creator_username = "@{}".format(creator_username) if creator_username else None
@@ -222,51 +222,51 @@ async def fetch_info(chat, event):
     caption = "<b>CHAT INFO:</b>\n"
     caption += f"ID: <code>{chat_obj_info.id}</code>\n"
     if chat_title is not None:
-        caption += f"{chat_type} name: {chat_title}\n"
+        caption += f"{chat_type} nome: {chat_title}\n"
     if former_title is not None:  # Meant is the very first title
-        caption += f"Former name: {former_title}\n"
+        caption += f"Antigo nome: {former_title}\n"
     if username is not None:
-        caption += f"{chat_type} type: Public\n"
+        caption += f"{chat_type} tipo: Público\n"
         caption += f"Link: {username}\n"
     else:
-        caption += f"{chat_type} type: Private\n"
+        caption += f"{chat_type} tipo: Privado\n"
     if creator_username is not None:
-        caption += f"Creator: {creator_username}\n"
+        caption += f"Criador: {creator_username}\n"
     elif creator_valid:
         caption += (
-            f'Creator: <a href="tg://user?id={creator_id}">{creator_firstname}</a>\n'
+            f'Criador: <a href="tg://user?id={creator_id}">{creator_firstname}</a>\n'
         )
     if created is not None:
-        caption += f"Created: <code>{created.date().strftime('%b %d, %Y')} - {created.time()}</code>\n"
+        caption += f"Criado em: <code>{created.date().strftime('%b %d, %Y')} - {created.time()}</code>\n"
     else:
-        caption += f"Created: <code>{chat_obj_info.date.date().strftime('%b %d, %Y')} - {chat_obj_info.date.time()}</code> {warn_emoji}\n"
+        caption += f"Criado em: <code>{chat_obj_info.date.date().strftime('%b %d, %Y')} - {chat_obj_info.date.time()}</code> {warn_emoji}\n"
     caption += f"Data Centre ID: {dc_id}\n"
     if exp_count is not None:
         chat_level = int((1 + sqrt(1 + 7 * exp_count / 14)) / 2)
         caption += f"{chat_type} level: <code>{chat_level}</code>\n"
     if messages_viewable is not None:
-        caption += f"Viewable messages: <code>{messages_viewable}</code>\n"
+        caption += f"Mensagens visíveis: <code>{messages_viewable}</code>\n"
     if messages_sent:
-        caption += f"Messages sent: <code>{messages_sent}</code>\n"
+        caption += f"Mensagens enviadas: <code>{messages_sent}</code>\n"
     elif messages_sent_alt:
-        caption += f"Messages sent: <code>{messages_sent_alt}</code> {warn_emoji}\n"
+        caption += f"Mensagens enviadas: <code>{messages_sent_alt}</code> {warn_emoji}\n"
     if members is not None:
-        caption += f"Members: <code>{members}</code>\n"
+        caption += f"Membros: <code>{members}</code>\n"
     if admins is not None:
-        caption += f"Administrators: <code>{admins}</code>\n"
+        caption += f"Administradores: <code>{admins}</code>\n"
     if bots_list:
         caption += f"Bots: <code>{bots}</code>\n"
     if members_online:
-        caption += f"Currently online: <code>{members_online}</code>\n"
+        caption += f"Atualmente online: <code>{members_online}</code>\n"
     if restrcited_users is not None:
-        caption += f"Restricted users: <code>{restrcited_users}</code>\n"
+        caption += f"Usuários restritos: <code>{restrcited_users}</code>\n"
     if banned_users is not None:
-        caption += f"Banned users: <code>{banned_users}</code>\n"
+        caption += f"Usuários banidos: <code>{banned_users}</code>\n"
     if group_stickers is not None:
         caption += f'{chat_type} stickers: <a href="t.me/addstickers/{chat.full_chat.stickerset.short_name}">{group_stickers}</a>\n'
     caption += "\n"
     if not broadcast:
-        caption += f"Slow mode: {slowmode}"
+        caption += f"Modo lento: {slowmode}"
         if (
             hasattr(chat_obj_info, "slowmode_enabled")
             and chat_obj_info.slowmode_enabled
@@ -275,27 +275,27 @@ async def fetch_info(chat, event):
         else:
             caption += "\n\n"
     if not broadcast:
-        caption += f"Supergroup: {supergroup}\n\n"
+        caption += f"Supergrupo: {supergroup}\n\n"
     if hasattr(chat_obj_info, "restricted"):
-        caption += f"Restricted: {restricted}\n"
+        caption += f"Restrito: {restricted}\n"
         if chat_obj_info.restricted:
-            caption += f"> Platform: {chat_obj_info.restriction_reason[0].platform}\n"
-            caption += f"> Reason: {chat_obj_info.restriction_reason[0].reason}\n"
-            caption += f"> Text: {chat_obj_info.restriction_reason[0].text}\n\n"
+            caption += f"> Plataforma: {chat_obj_info.restriction_reason[0].platform}\n"
+            caption += f"> Motivo: {chat_obj_info.restriction_reason[0].reason}\n"
+            caption += f"> Texto: {chat_obj_info.restriction_reason[0].text}\n\n"
         else:
             caption += "\n"
     if hasattr(chat_obj_info, "scam") and chat_obj_info.scam:
-        caption += "Scam: <b>Yes</b>\n\n"
+        caption += "Scam: <b>Sim</b>\n\n"
     if hasattr(chat_obj_info, "verified"):
-        caption += f"Verified by Telegram: {verified}\n\n"
+        caption += f"Verificado pelo Telegram: {verified}\n\n"
     if description:
-        caption += f"Description: \n<code>{description}</code>\n"
+        caption += f"Descriçãon: \n<code>{description}</code>\n"
     return caption
 
 
 CMD_HELP.update(
     {
-        "chatinfo": ".chatinfo [opcional: <reply/tag/chat id/invite link>]\
-            \nUso: Gets info of a chat. Some info might be limited due to missing permissions."
+        "chatinfo": ".chatinfo [opcional: <resposta/tag/id do bate-papo/link de convite>]\
+            \nUso: Recebe informações de um bate-papo. Algumas informações podem ser limitadas devido à falta de permissões."
     }
 )

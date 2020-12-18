@@ -29,7 +29,7 @@ async def useridgetter(target):
                 name = "@" + message.forward.sender.username
             else:
                 name = "*" + message.forward.sender.first_name + "*"
-        await target.edit("**Name:** {} \n**User ID:** `{}`".format(name, user_id))
+        await target.edit("**Nome:** {} \n**User ID:** `{}`".format(name, user_id))
 
 
 @register(outgoing=True, pattern="^.link(?: |$)(.*)")
@@ -65,11 +65,11 @@ async def log(log_text):
             textx = user + log_text.pattern_match.group(1)
             await bot.send_message(BOTLOG_CHATID, textx)
         else:
-            await log_text.edit("`What am I supposed to log?`")
+            await log_text.edit("`O que devo registrar?`")
             return
-        await log_text.edit("`Logged Successfully`")
+        await log_text.edit("`Registrado com sucesso`")
     else:
-        await log_text.edit("`This feature requires Logging to be enabled!`")
+        await log_text.edit("`Este recurso requer que o BOTLOG_CHATID esteja ativado!`")
     await sleep(2)
     await log_text.delete()
 
@@ -77,7 +77,7 @@ async def log(log_text):
 @register(outgoing=True, pattern="^.kickme$")
 async def kickme(leave):
     """ Basically it's .kickme command """
-    await leave.edit("Nope, no, no, I go away")
+    await leave.edit("Não, não, não, eu vou embora")
     await leave.client.kick_participant(leave.chat_id, "me")
 
 
@@ -87,10 +87,10 @@ async def unmute_chat(unm_e):
     try:
         from userbot.modules.sql_helper.keep_read_sql import unkread
     except AttributeError:
-        await unm_e.edit("`Running on Non-SQL Mode!`")
+        await unm_e.edit("`Executando em modo não-SQL!`")
         return
     unkread(str(unm_e.chat_id))
-    await unm_e.edit("```Unmuted this chat Successfully```")
+    await unm_e.edit("```Reativou este bate-papo com sucesso```")
     await sleep(2)
     await unm_e.delete()
 
@@ -101,16 +101,16 @@ async def mute_chat(mute_e):
     try:
         from userbot.modules.sql_helper.keep_read_sql import kread
     except AttributeError:
-        await mute_e.edit("`Running on Non-SQL mode!`")
+        await mute_e.edit("`Executando em modo não-SQL!`")
         return
     await mute_e.edit(str(mute_e.chat_id))
     kread(str(mute_e.chat_id))
-    await mute_e.edit("`Shush! This chat will be silenced!`")
+    await mute_e.edit("`Shh! Este chat será silenciado!`")
     await sleep(2)
     await mute_e.delete()
     if BOTLOG:
         await mute_e.client.send_message(
-            BOTLOG_CHATID, str(mute_e.chat_id) + " was silenced."
+            BOTLOG_CHATID, str(mute_e.chat_id) + " foi silenciado."
         )
 
 
@@ -146,12 +146,12 @@ async def sedNinjaToggle(event):
     global regexNinja
     if event.pattern_match.group(1) == "on":
         regexNinja = True
-        await event.edit("`Successfully enabled ninja mode for Regexbot.`")
+        await event.edit("`Modo ninja habilitado com sucesso para Regexbot.`")
         await sleep(1)
         await event.delete()
     elif event.pattern_match.group(1) == "off":
         regexNinja = False
-        await event.edit("`Successfully disabled ninja mode for Regexbot.`")
+        await event.edit("`Modo ninja desativado com sucesso para Regexbot.`")
         await sleep(1)
         await event.delete()
 
@@ -159,21 +159,21 @@ async def sedNinjaToggle(event):
 CMD_HELP.update(
     {
         "chat": ".chatid\
-\nUso: Fetches the current chat's ID\
+\nUso: Busca o ID do chat atual\
 \n\n.userid\
-\nUso: Fetches the ID of the user in reply, if its a forwarded message, finds the ID for the source.\
+\nUso: Busca o ID do usuário em resposta, se for uma mensagem encaminhada, encontra o ID da fonte.\
 \n\n.log\
-\nUso: Forwards the message you've replied to in your bot logs group.\
+\nUso: Encaminha a mensagem que você respondeu em seu grupo de logs de bot.\
 \n\n.kickme\
-\nUso: Leave from a targeted group.\
+\nUso: Sai de um grupo.\
 \n\n.unmutechat\
-\nUso: Unmutes a muted chat.\
+\nUso: Reativa as notificações de um chat.\
 \n\n.mutechat\
-\nUso: Allows you to mute any chat.\
-\n\n.link <username/userid> : <optional text> (or) reply to someone's message with .link <optional text>\
-\nUso: Generate a permanent link to the user's profile with optional custom text.\
+\nUso: Permite silenciar qualquer chat.\
+\n\n.link <nome de usuário/id de usuário> : <texto opcional> (ou) responda a mensagem de alguém com .link <texto opcional>\
+\nUso: Gera um link permanente para o perfil do usuário com texto personalizado opcional.\
 \n\n.regexninja on/off\
-\nUso: Globally enable/disables the regex ninja module.\
-\nRegex Ninja module helps to delete the regex bot's triggering messages."
+\nUso: Ativa/desativa globalmente o módulo regex ninja.\
+\nO módulo Regex Ninja ajuda a excluir as mensagens de ativação do bot regex."
     }
 )
