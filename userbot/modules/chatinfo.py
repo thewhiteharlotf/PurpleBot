@@ -289,7 +289,7 @@ async def fetch_info(chat, event):
     if hasattr(chat_obj_info, "verified"):
         caption += f"Verificado pelo Telegram: {verified}\n\n"
     if description:
-        caption += f"Descriçãon: \n<code>{description}</code>\n"
+        caption += f"Descrição: \n<code>{description}</code>\n"
     return caption
 
 
