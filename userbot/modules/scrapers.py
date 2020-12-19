@@ -516,6 +516,46 @@ async def lang(value):
         )
 
 
+@register(outgoing=True, pattern=r"^\.yt (\d*) *(.*)")
+async def yt_search(video_q):
+    """For .yt command, do a YouTube search from Telegram."""
+    if video_q.pattern_match.group(1) != "":
+        counter = int(video_q.pattern_match.group(1))
+        if counter > 10:
+            counter = int(10)
+        if counter <= 0:
+            counter = int(1)
+    else:
+        counter = int(3)
+
+    query = video_q.pattern_match.group(2)
+    if not query:
+        await video_q.edit("`Digite algo para pesquisar`")
+    await video_q.edit("`Processando...`")
+
+    try:
+        results = json.loads(YoutubeSearch(query, max_results=counter).to_json())
+    except KeyError:
+        return await video_q.edit(
+            "`Pesquisa do Youtube falhou.\nNão consigo pesquisar isso!`"
+        )
+
+    output = f"**Resultado de Pesquisa:**\n`{query}`\n\n**Resultados:**\n\n"
+
+    for i in results["videos"]:
+        try:
+            title = i["title"]
+            link = "https://youtube.com" + i["url_suffix"]
+            channel = i["channel"]
+            duration = i["duration"]
+            views = i["views"]
+            output += f"[{title}]({link})\nCanal: `{channel}`\nDuração: {duration} | {views}\n\n"
+        except IndexError:
+            break
+
+    await video_q.edit(output, link_preview=False)        
+
+
 @register(outgoing=True, pattern=r".rip(audio|video) (.*)")
 async def download_video(v_url):
     """ Para o comando .rip, baixa mídia do YouTube e de muitos outros sites. """
@@ -700,6 +740,13 @@ CMD_HELP.update(
     {
         "trt": ".trt <texto> [ou reply]\
         \nUso: Traduz o texto para o idioma definido.\nUse .lang trt <código do idioma> para definir idioma para trt. (Padrão é [English])"
+    }
+)
+CMD_HELP.update(
+    {
+        "yt": ".yt <número> <pesquisa>"
+        "\nUso: Faz uma pesquisa no YouTube."
+        "\nÉ possível especificar o número de resultados mostrados (padrão é 3)."
     }
 )
 CMD_HELP.update(
