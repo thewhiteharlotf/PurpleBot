@@ -6,6 +6,7 @@
 """ Userbot module containing various scrapers. """
 
 import asyncio
+import json
 import os
 import re
 import shutil
@@ -22,7 +23,7 @@ from google_trans_new import LANGUAGES, google_translator
 from gtts import gTTS
 from gtts.lang import tts_langs
 from requests import get
-from search_engine_parser import YahooSearch as GoogleSearch
+from search_engine_parser import GoogleSearch
 from telethon.tl.types import DocumentAttributeAudio
 from urbandict import define
 from wikipedia import summary
@@ -39,7 +40,6 @@ from youtube_dl.utils import (
     XAttrMetadataError,
 )
 from youtube_search import YoutubeSearch
-
 
 from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP, TEMP_DOWNLOAD_DIRECTORY, WOLFRAM_ID
 from userbot.events import register
