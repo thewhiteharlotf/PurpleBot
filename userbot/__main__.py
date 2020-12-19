@@ -9,13 +9,13 @@ from importlib import import_module
 from sys import argv
 
 from telethon.errors.rpcerrorlist import PhoneNumberInvalidError
-from userbot import LOGS, bot
+from userbot import LOGS, bot, USERBOT_VERSION
 from userbot.modules import ALL_MODULES
 
 
-INVALID_PH = '\nERROR: The Phone No. entered is INVALID' \
-             '\n Tip: Use Country Code along with number.' \
-             '\n or check your phone number and try again !'
+INVALID_PH = '\nERRO: O número de telefone é INVÁLIDO' \
+             '\n Dica: Use o código do país junto com o número.' \
+             '\n ou verifique o seu número de telefone e tente novamente !'
 
 try:
     bot.start()
@@ -26,10 +26,10 @@ except PhoneNumberInvalidError:
 for module_name in ALL_MODULES:
     imported_module = import_module("userbot.modules." + module_name)
 
-LOGS.info("You are running PurpleBot [v4.0]")
+LOGS.info("Você está executando PurpleBot [v{USERBOT_VERSION}]")
 
 LOGS.info(
-    "Congratulations, your userbot is now running !! Test it by typing .alive / .on in any chat."
+    "Parabéns, seu userbot agora está rodando !! Teste-o digitando .alive/.on em qualquer chat."
 )
 
 if len(argv) not in (1, 3, 4):
