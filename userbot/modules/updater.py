@@ -76,10 +76,10 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
                 break
         if heroku_app is None:
             await event.edit(
-                f"{txt}\n`Credenciais inválidos do Heroku para implantar a userbot dyno.`"
+                f"{txt}\n`Credenciais inválidos do Heroku para atualizar os dynos do userbot.`"
             )
             return repo.__del__()
-        await event.edit("`Userbot Dyno Build em progresso, por favor aguarde...`")
+        await event.edit("`Userbot Dynos sendo atualizados, por favor aguarde...`")
         ups_rem.fetch(ac_br)
         repo.git.reset("--hard", "FETCH_HEAD")
         heroku_git_url = heroku_app.git_url.replace(
@@ -93,7 +93,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
         try:
             remote.push(refspec="HEAD:refs/heads/master", force=True)
         except GitCommandError as error:
-            await event.edit(f"{txt}\n`Aqui está o error log:\n{error}`")
+            await event.edit(f"{txt}\n`Aqui está o log de erros:\n{error}`")
             return repo.__del__()
         await event.edit(
             "`Atualizado com sucesso!\n" "Reiniciando, por favor aguarde...`"
@@ -143,12 +143,12 @@ async def upstream(event):
         await event.edit(f"{txt}\n`diretório {error} não encontrado`")
         return repo.__del__()
     except GitCommandError as error:
-        await event.edit(f"{txt}\n`Falha inicial! {error}`")
+        await event.edit(f"{txt}\n`Falha ao inicializar! {error}`")
         return repo.__del__()
     except InvalidGitRepositoryError as error:
         if conf is None:
             return await event.edit(
-                f"`Infelizmente, o diretório {error} não parece ser um repositório git."
+                f"`Infelizmente, o diretório {error} não parece ser um repositório GitHub."
                 "\nMas podemos consertar isso forçando a atualização do userbot usando .update now.`"
             )
         repo = Repo.init()
@@ -163,10 +163,10 @@ async def upstream(event):
     if ac_br != UPSTREAM_REPO_BRANCH:
         await event.edit(
             "**[UPDATER]:**\n"
-            f"`Parece que você está tentando usar uma branch customizada ({ac_br}). "
+            f"`Parece que você está tentando usar uma branch personalizada ({ac_br}). "
             "nesse caso, o atualizador não pode verificar "
             "qual branch deve ser atualizada. "
-            "por favor, verifique na branch principal`"
+            "por favor, verifique a branch principal`"
         )
         return repo.__del__()
     try:
@@ -189,7 +189,7 @@ async def upstream(event):
         changelog_str = f"**Nova ATUALIZAÇÃO disponível para [{ac_br}]:\n\nLISTA DE MUDANÇAS:**\n`{changelog}`"
         if len(changelog_str) > 4096:
             await event.edit(
-                "`Lista de mudanças muito grande, abra o arquivo para conferir.`"
+                "`Lista de mudanças muito grande, enviando como arquivo.`"
             )
             file = open("output.txt", "w+")
             file.write(changelog_str)
@@ -202,11 +202,11 @@ async def upstream(event):
             remove("output.txt")
         else:
             await event.edit(changelog_str)
-        return await event.respond('`Envie ".update now" ou ".update deploy" para atualizar`')
+        return await event.respond('`Digite ".update now" ou ".update deploy" para atualizar`')
 
     if force_update:
         await event.edit(
-            "`Sincronizando o último código estável do userbot, aguarde...`"
+            "`Sincronizando com o último código estável do userbot, aguarde...`"
         )
     else:
         await event.edit("`Atualizando PurpleBot...`")
