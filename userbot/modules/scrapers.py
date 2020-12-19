@@ -46,8 +46,8 @@ from userbot.events import register
 from userbot.utils import chrome, googleimagesdownload, progress
 
 CARBONLANG = "auto"
-TTS_LANG = "en"
-TRT_LANG = "en"
+TTS_LANG = "pt"
+TRT_LANG = "pt"
 
 
 @register(outgoing=True, pattern="^.crblang (.*)")
