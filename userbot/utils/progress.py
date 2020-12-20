@@ -40,7 +40,7 @@ async def progress(
             round(percentage, 2))
         tmp = (
             f"{progress_str}\n"
-            f"`{humanbytes(current)} of {humanbytes(total)}"
+            f"`{humanbytes(current)} de {humanbytes(total)}"
             f" @ {humanbytes(speed)}`\n"
             f"`Tempo estimado` -> {time_formatter(eta)}\n"
             f"`Duração` -> {time_formatter(elapsed_time)}"
