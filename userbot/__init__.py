@@ -136,7 +136,7 @@ ALIVE_LOGO = os.environ.get("ALIVE_LOGO") or None
 COUNTRY = str(os.environ.get("COUNTRY") or "")
 TZ_NUMBER = int(os.environ.get("TZ_NUMBER") or 1)
 
-# Version of One4uBot
+# Version of PurpleBot
 USERBOT_VERSION = os.environ.get("USERBOT_VERSION") or "4.2"
 
 # User Terminal alias
