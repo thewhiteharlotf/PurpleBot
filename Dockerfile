@@ -16,6 +16,7 @@ COPY ./sample_config.env ./userbot.session* ./config.env* /PurpleBot/
 #
 EXPOSE 80 443
 
+
 RUN pip3 install  -r https://raw.githubusercontent.com/thewhiteharlot/purplebot/sql-extended/requirements.txt
 
 
