@@ -26,10 +26,10 @@ except PhoneNumberInvalidError:
 for module_name in ALL_MODULES:
     imported_module = import_module("userbot.modules." + module_name)
 
-LOGS.info("Você está executando PurpleBot [v4.2]")
+LOGS.info("Você está executando PurpleBot [v4.5]")
 
 LOGS.info(
-    "Parabéns, seu userbot agora está rodando !! Teste-o digitando .alive/.on em qualquer chat."
+    "Parabéns, seu userbot agora está rodando !! Teste-o digitando .on/.alive em qualquer chat."
 )
 
 if len(argv) not in (1, 3, 4):
