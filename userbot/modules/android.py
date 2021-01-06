@@ -25,7 +25,7 @@ GITHUB = "https://github.com"
 @register(outgoing=True, pattern=r"^\.magisk$")
 async def magisk(request):
     magisk_dict = {
-        "Stable": "https://raw.githubusercontent.com/topjohnwu/magisk_files/master/stable.json",
+        "Estável": "https://raw.githubusercontent.com/topjohnwu/magisk_files/master/stable.json",
         "Beta": "https://raw.githubusercontent.com/topjohnwu/magisk_files/master/beta.json",
         "Canary": "https://raw.githubusercontent.com/topjohnwu/magisk_files/canary/canary.json",
     }
@@ -49,7 +49,7 @@ async def magisk(request):
         releases += (
             f'{name}: [ZIP v{data["magisk"]["version"]}]({data["magisk"]["link"]}) | '
             f'[APK v{data["app"]["version"]}]({data["app"]["link"]}) | '
-            f'[Uninstaller]({data["uninstaller"]["link"]})\n'
+            f'[Desinstalador]({data["uninstaller"]["link"]})\n'
         )
     await request.edit(releases)
 

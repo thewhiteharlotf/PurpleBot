@@ -19,20 +19,20 @@ async def corona(event):
     try:
         country_data = covid.get_status_by_country_name(country)
         output_text = (
-            f"`Confirmed   : {format_integer(country_data['confirmed'])}`\n"
-            + f"`Active      : {format_integer(country_data['active'])}`\n"
-            + f"`Deaths      : {format_integer(country_data['deaths'])}`\n"
-            + f"`Recovered   : {format_integer(country_data['recovered'])}`\n\n"
-            + f"`New Cases   : {format_integer(country_data['new_cases'])}`\n"
-            + f"`New Deaths  : {format_integer(country_data['new_deaths'])}`\n"
-            + f"`Critical    : {format_integer(country_data['critical'])}`\n"
-            + f"`Total Tests : {format_integer(country_data['total_tests'])}`\n\n"
-            + f"Data provided by [Worldometer](https://www.worldometers.info/coronavirus/country/{country})"
+            f"`Confirmado   : {format_integer(country_data['confirmed'])}`\n"
+            + f"`Ativo      : {format_integer(country_data['active'])}`\n"
+            + f"`Mortes      : {format_integer(country_data['deaths'])}`\n"
+            + f"`Recuperados   : {format_integer(country_data['recovered'])}`\n\n"
+            + f"`Novos Casos   : {format_integer(country_data['new_cases'])}`\n"
+            + f"`Novas Mortes  : {format_integer(country_data['new_deaths'])}`\n"
+            + f"`Crítico    : {format_integer(country_data['critical'])}`\n"
+            + f"`Total de testes : {format_integer(country_data['total_tests'])}`\n\n"
+            + f"Dados fornecidos por [Worldometer](https://www.worldometers.info/coronavirus/country/{country})"
         )
-        await event.edit(f"Corona Virus Info in {country}:\n\n{output_text}")
+        await event.edit(f"Informações do covid-19 {country}:\n\n{output_text}")
     except ValueError:
         await event.edit(
-            f"No information found for: {country}!\nCheck your spelling and try again."
+            f"Nenhuma informação encontrada para: {country}!\nVerifique a ortografia e tente novamente."
         )
 
 
@@ -58,7 +58,7 @@ def format_integer(number, thousand_separator="."):
 
 CMD_HELP.update(
     {
-        "covid": ".covid <country>"
-        "\nUso: Get an information about data covid-19 in your country.\n"
+        "covid": ".covid <país>"
+        "\nUso: Obtenha informações sobre os dados do covid-19 em seu país.\n"
     }
 )

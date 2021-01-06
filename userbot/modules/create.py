@@ -38,7 +38,7 @@ async def telegraphs(grop):
                     )
                 )
                 await grop.edit(
-                    "Your {} Group Created Successfully. Click [{}]({}) to join".format(
+                    "Seu grupo {} foi criado com sucesso. Clique em [{}]({}) para entrar".format(
                         group_name, group_name, result.link
                     )
                 )
@@ -49,7 +49,7 @@ async def telegraphs(grop):
                 r = await grop.client(
                     functions.channels.CreateChannelRequest(  # pylint:disable=E0602
                         title=group_name,
-                        about="Welcome to this Channel",
+                        about="Bem vindo a este canal",
                         megagroup=False if type_of_group == "c" else True,
                     )
                 )
@@ -60,7 +60,7 @@ async def telegraphs(grop):
                     )
                 )
                 await grop.edit(
-                    "Your {} Group/Channel Created Successfully. Click [{}]({}) to join".format(
+                    "Seu grupo/canal {} foi criado com sucesso. Clique em [{}]({}) para entrar".format(
                         group_name, group_name, result.link
                     )
                 )
@@ -72,13 +72,13 @@ CMD_HELP.update(
     {
         "create": "\
 Create\
-\nUso: Create Channel, Group & Group With Bot.\
-\n\n.create g <group name>\
-\nUso: Create a Private Group.\
-\n\n.create b <group name>\
-\nUso: Create a Group with Bot.\
-\n\n.create c <channel name>\
-\nUso: Create a Channel.\
+\nUso: Criar canais e grupos com bot.\
+\n\n.create g <nome do grupo>\
+\nUso: Criar um Grupo Privado.\
+\n\n.create b <nome do grupo>\
+\nUso: Criar um grupo com bot.\
+\n\n.create c <nome do canal>\
+\nUso: Criar um canal.\
 "
     }
 )

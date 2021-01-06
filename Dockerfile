@@ -1,20 +1,22 @@
 FROM movecrew/one4ubot:alpine-latest
 
-RUN mkdir /One4uBot && chmod 777 /One4uBot
-ENV PATH="/One4uBot/bin:$PATH"
-WORKDIR /One4uBot
+RUN mkdir /PurpleBot && chmod 777 /PurpleBot
+ENV PATH="/PurpleBot/bin:$PATH"
+WORKDIR /PurpleBot
 
-RUN git clone https://github.com/thewhiteharlot/PurpleBot -b sql-extended /One4uBot
+RUN git clone https://github.com/thewhiteharlot/PurpleBot -b sql-extended /PurpleBot
 
 #
 # Copies session and config(if it exists)
 #
-COPY ./sample_config.env ./userbot.session* ./config.env* /One4uBot/
+COPY ./sample_config.env ./userbot.session* ./config.env* /PurpleBot/
 
 #
 # Make open port TCP
 #
 EXPOSE 80 443
+
+RUN pip3 install  -r https://raw.githubusercontent.com/thewhiteharlot/purplebot/sql-extended/requirements.txt
 
 
 #

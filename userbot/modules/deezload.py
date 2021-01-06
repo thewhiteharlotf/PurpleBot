@@ -160,8 +160,8 @@ async def upload_track(track_location, message):
 
 CMD_HELP.update(
     {
-        "deezload": ".deez <spotify/deezer link> <Format>"
-        "\nUso: Download music from deezer."
-        "\n\n *Format= `FLAC`, `MP3_320`, `MP3_256`, `MP3_128`."
+        "deezload": ".deez <spotify/deezer link> <Formato>"
+        "\nUso: Baixar música do deezer."
+        "\n\n *Formatos= `FLAC`, `MP3_320`, `MP3_256`, `MP3_128`."
     }
 )

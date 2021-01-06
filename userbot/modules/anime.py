@@ -123,30 +123,30 @@ def get_anime_manga(mal_id, search_type, _user_id):
     if search_type == "anime_anime":
         caption += textwrap.dedent(
             f"""
-        🆎 <b>Type</b>: <code>{result['type']}</code>
+        🆎 <b>Tipo</b>: <code>{result['type']}</code>
         📡 <b>Status</b>: <code>{result['status']}</code>
-        🎙️ <b>Aired</b>: <code>{result['aired']['string']}</code>
-        🔢 <b>Episodes</b>: <code>{result['episodes']}</code>
-        💯 <b>Score</b>: <code>{result['score']}</code>
-        🌐 <b>Premiered</b>: <code>{result['premiered']}</code>
-        ⌛ <b>Duration</b>: <code>{result['duration']}</code>
-        🎭 <b>Genres</b>: <code>{genre_string}</code>
-        🎙️ <b>Studios</b>: <code>{studio_string}</code>
-        💸 <b>Producers</b>: <code>{producer_string}</code>
+        🎙️ <b>Exibido</b>: <code>{result['aired']['string']}</code>
+        🔢 <b>Episódios</b>: <code>{result['episodes']}</code>
+        💯 <b>Pontuação</b>: <code>{result['score']}</code>
+        🌐 <b>Estreou</b>: <code>{result['premiered']}</code>
+        ⌛ <b>Duração</b>: <code>{result['duration']}</code>
+        🎭 <b>Gêneros</b>: <code>{genre_string}</code>
+        🎙️ <b>Estúdio</b>: <code>{studio_string}</code>
+        💸 <b>Produtores</b>: <code>{producer_string}</code>
         🎬 <b>Trailer:</b> {LOL}
-        📖 <b>Synopsis</b>: <code>{synopsis_string}</code> <a href='{result['url']}'>Read More</a>
+        📖 <b>Sinopse</b>: <code>{synopsis_string}</code> <a href='{result['url']}'>Read More</a>
         """
         )
     elif search_type == "anime_manga":
         caption += textwrap.dedent(
             f"""
-        🆎 <b>Type</b>: <code>{result['type']}</code>
+        🆎 <b>Tipo</b>: <code>{result['type']}</code>
         📡 <b>Status</b>: <code>{result['status']}</code>
         🔢 <b>Volumes</b>: <code>{result['volumes']}</code>
-        📃 <b>Chapters</b>: <code>{result['chapters']}</code>
-        💯 <b>Score</b>: <code>{result['score']}</code>
-        🎭 <b>Genres</b>: <code>{genre_string}</code>
-        📖 <b>Synopsis</b>: <code>{synopsis_string}</code>
+        📃 <b>Capítulos</b>: <code>{result['chapters']}</code>
+        💯 <b>Pontuação</b>: <code>{result['score']}</code>
+        🎭 <b>Gêneros</b>: <code>{genre_string}</code>
+        📖 <b>Sinopse</b>: <code>{synopsis_string}</code>
         """
         )
     return caption, image
@@ -190,25 +190,25 @@ def replace_text(text):
 async def anime(event):
     query = event.pattern_match.group(1)
     reply = await event.get_reply_message()
-    await event.edit("`Searching Anime...`")
+    await event.edit("`Procurando Anime...`")
     if query:
         pass
     elif reply:
         query = reply.text
     else:
-        await event.edit("`Bruh.. What I am supposed to search ?`")
+        await event.edit("`Bruh .. O que eu devo pesquisar ?`")
         await asyncio.sleep(6)
         await event.delete()
         return
     try:
         res = jikan.search("anime", query)
     except Exception as err:
-        await event.edit(f"**Error:** \n`{err}`")
+        await event.edit(f"**Erro:** \n`{err}`")
         return
     try:
         res = res.get("results")[0].get("mal_id")  # Grab first result
     except APIException:
-        await event.edit("`Error connecting to the API. Please try again!`")
+        await event.edit("`Erro ao conectar-se à API. Por favor, tente novamente!`")
         return
     if res:
         anime = jikan.anime(res)
@@ -246,41 +246,41 @@ async def anime(event):
         await event.edit("`No results Found!`")
         return
     rep = f"<b>{title}</b> - ({japanese})\n"
-    rep += f"<b>Type:</b> <code>{type}</code>\n"
-    rep += f"<b>Source:</b> <code>{source}</code>\n"
+    rep += f"<b>Tipo:</b> <code>{type}</code>\n"
+    rep += f"<b>Fonte:</b> <code>{source}</code>\n"
     rep += f"<b>Status:</b> <code>{status}</code>\n"
-    rep += f"<b>Genres:</b> <code>{genres}</code>\n"
-    rep += f"<b>Episodes:</b> <code>{episodes}</code>\n"
-    rep += f"<b>Duration:</b> <code>{duration}</code>\n"
-    rep += f"<b>Score:</b> <code>{score}</code>\n"
-    rep += f"<b>Studio(s):</b> <code>{studios}</code>\n"
-    rep += f"<b>Premiered:</b> <code>{premiered}</code>\n"
-    rep += f"<b>Rating:</b> <code>{rating}</code>\n\n"
+    rep += f"<b>Gêneros:</b> <code>{genres}</code>\n"
+    rep += f"<b>Episódios:</b> <code>{episodes}</code>\n"
+    rep += f"<b>Duração:</b> <code>{duration}</code>\n"
+    rep += f"<b>Pontuação:</b> <code>{score}</code>\n"
+    rep += f"<b>Estúdio(s):</b> <code>{studios}</code>\n"
+    rep += f"<b>Estreou:</b> <code>{premiered}</code>\n"
+    rep += f"<b>Avaliação:</b> <code>{rating}</code>\n\n"
     rep += f"<a href='{image_url}'>\u200c</a>"
-    rep += f"📖 <b>Synopsis</b>: <i>{synopsis}</i>\n"
-    rep += f'<b>Read More:</b> <a href="{url}">MyAnimeList</a>'
+    rep += f"📖 <b>Sinopse</b>: <i>{synopsis}</i>\n"
+    rep += f'<b>Ler mais:</b> <a href="{url}">MyAnimeList</a>'
     await event.edit(rep, parse_mode="HTML", link_preview=False)
 
 
 @register(outgoing=True, pattern=r"^\.manga ?(.*)")
 async def manga(event):
     query = event.pattern_match.group(1)
-    await event.edit("`Searching Manga...`")
+    await event.edit("`Procurando Mangá...`")
     if not query:
-        await event.edit("`Bruh.. Gib me Something to Search`")
+        await event.edit("`Bruh .. Me diga algo para pesquisar`")
         return
     res = ""
     manga = ""
     try:
         res = jikan.search("manga", query).get("results")[0].get("mal_id")
     except APIException:
-        await event.edit("`Error connecting to the API. Please try again!`")
+        await event.edit("`Erro ao conectar-se à API. Por favor, tente novamente!`")
         return ""
     if res:
         try:
             manga = jikan.manga(res)
         except APIException:
-            await event.edit("`Error connecting to the API. Please try again!`")
+            await event.edit("`Erro ao conectar-se à API. Por favor, tente novamente!`")
             return ""
         title = manga.get("title")
         japanese = manga.get("title_japanese")
@@ -298,15 +298,15 @@ async def manga(event):
         image = manga.get("image_url")
         url = manga.get("url")
         rep = f"<b>{title} ({japanese})</b>\n"
-        rep += f"<b>Type:</b> <code>{type}</code>\n"
+        rep += f"<b>Tipo:</b> <code>{type}</code>\n"
         rep += f"<b>Status:</b> <code>{status}</code>\n"
-        rep += f"<b>Genres:</b> <code>{genres}</code>\n"
-        rep += f"<b>Score:</b> <code>{score}</code>\n"
+        rep += f"<b>Gêneros:</b> <code>{genres}</code>\n"
+        rep += f"<b>Pontuação:</b> <code>{score}</code>\n"
         rep += f"<b>Volumes:</b> <code>{volumes}</code>\n"
-        rep += f"<b>Chapters:</b> <code>{chapters}</code>\n\n"
+        rep += f"<b>Capítulos:</b> <code>{chapters}</code>\n\n"
         rep += f"<a href='{image}'>\u200c</a>"
-        rep += f"📖 <b>Synopsis</b>: <i>{synopsis}</i>\n"
-        rep += f'<b>Read More:</b> <a href="{url}">MyAnimeList</a>'
+        rep += f"📖 <b>Sinopse</b>: <i>{synopsis}</i>\n"
+        rep += f'<b>Ler mais:</b> <a href="{url}">MyAnimeList</a>'
         await event.edit(rep, parse_mode="HTML", link_preview=False)
 
 
@@ -320,7 +320,7 @@ async def site_search(event):
     elif message:
         search_query = message.text
     else:
-        await event.edit("`Uuf Bro.. Gib something to Search`")
+        await event.edit("`Uuf Bro .. Me dê algo para pesquisar`")
         return
 
     if site == "kaizoku":
@@ -330,7 +330,7 @@ async def site_search(event):
         search_result = soup.find_all("h2", {"class": "post-title"})
 
         if search_result:
-            result = f"<a href='{search_url}'>Click Here For More Results</a> <b>of</b> <code>{html.escape(search_query)}</code> <b>on</b> <code>AnimeKaizoku</code>: \n\n"
+            result = f"<a href='{search_url}'>Clique aqui para mais resultados</a> <b>of</b> <code>{html.escape(search_query)}</code> <b>on</b> <code>AnimeKaizoku</code>: \n\n"
             for entry in search_result:
                 post_link = entry.a["href"]
                 post_name = html.escape(entry.text.strip())
@@ -346,11 +346,11 @@ async def site_search(event):
         soup = bs4.BeautifulSoup(html_text, "html.parser")
         search_result = soup.find_all("h2", {"class": "title"})
 
-        result = f"<a href='{search_url}'>Click Here For More Results</a> <b>of</b> <code>{html.escape(search_query)}</code> <b>on</b> <code>AnimeKayo</code>: \n\n"
+        result = f"<a href='{search_url}'>Clique aqui para mais resultados</a> <b>of</b> <code>{html.escape(search_query)}</code> <b>on</b> <code>AnimeKayo</code>: \n\n"
         for entry in search_result:
 
-            if entry.text.strip() == "Nothing Found":
-                result = f"<b>No result found for</b> <code>{html.escape(search_query)}</code> <b>on</b> <code>AnimeKayo</code>"
+            if entry.text.strip() == "Sem resultados":
+                result = f"<b>Nenhum resultado encontrado para</b> <code>{html.escape(search_query)}</code> <b>on</b> <code>AnimeKayo</code>"
                 break
 
             post_link = entry.a["href"]
@@ -368,13 +368,13 @@ async def character(event):
     elif message:
         search_query = message.text
     else:
-        await event.edit("Format: `.char <character name>`")
+        await event.edit("Formato: `.char <character name>`")
         return
 
     try:
         search_result = jikan.search("character", search_query)
     except APIException:
-        await event.edit("`Character not found.`")
+        await event.edit("`Personagem não encontrado.`")
         return
     first_mal_id = search_result["results"][0]["mal_id"]
     character = jikan.character(first_mal_id)
@@ -397,7 +397,7 @@ async def character(event):
     for entity in character:
         if character[entity] is None:
             character[entity] = "Unknown"
-    caption += f"\n🔰**Extracted Character Data**🔰\n\n{about_string}"
+    caption += f"\n🔰**Dados de extraídos de personagem**🔰\n\n{about_string}"
     caption += f" [Read More]({mal_url})..."
     await event.delete()
     await event.client.send_file(
@@ -410,7 +410,7 @@ async def character(event):
 
 @register(outgoing=True, pattern=r"^\.upcoming ?(.*)")
 async def upcoming(message):
-    rep = "<b>Upcoming anime</b>\n"
+    rep = "<b>Anime em breve</b>\n"
     later = jikan.season_later()
     anime = later.get("anime")
     for new in anime:
@@ -435,20 +435,20 @@ async def get_anime(message):
             )
             return
     except Exception as err:
-        await message.edit(f"**Encountered an Unknown Exception**: \n{err}")
+        await message.edit(f"**Exceção desconhecida encontrada**: \n{err}")
         return
 
-    p_rm = await message.reply("`Searching Anime...`")
+    p_rm = await message.reply("`Procurando Anime...`")
     f_mal_id = ""
     try:
         jikan = jikanpy.AioJikan()
         search_res = await jikan.search("anime", query)
         f_mal_id = search_res["results"][0]["mal_id"]
     except IndexError:
-        await p_rm.edit(f"No Results Found for {query}")
+        await p_rm.edit(f"Nenhum resultado encontrado para {query}")
         return
     except Exception as err:
-        await p_rm.edit(f"**Encountered an Unknown Exception**: \n{err}")
+        await p_rm.edit(f"**Exceção desconhecida encontrada**: \n{err}")
         return
 
     results_ = await jikan.anime(f_mal_id)
@@ -512,15 +512,15 @@ async def get_anime(message):
 
     # Build captions:
     captions = f"""📺  `{anime_title}` - `{eng_title}` - `{jap_title}`
-**🎭 Genre:** `{genress_md}`
-**🆎 Type:** `{type_}`
-**🔢 Episodes:** `{episodes}`
+**🎭 Gênero:** `{genress_md}`
+**🆎 Tipo:** `{type_}`
+**🔢 Episódios:** `{episodes}`
 **📡 Status:** `{status}`
-**🔞 Rating:** `{rating}`
-**💯 Score:** `{score}`
-[📖 Synopsis]({synopsis_link})
+**🔞 Avaliação:** `{rating}`
+**💯 Pontuação:** `{score}`
+[📖 Sinopse]({synopsis_link})
 [🎬 Trailer]({trailer_link})
-[📚 More Info]({mal_dir_link})
+[📚 Mais informações]({mal_dir_link})
 """
 
     await p_rm.delete()
@@ -531,7 +531,7 @@ async def get_anime(message):
 async def manga(message):
     search_query = message.pattern_match.group(1)
     await message.get_reply_message()
-    await message.edit("`Searching Manga..`")
+    await message.edit("`Procurando Mangá..`")
     jikan = jikanpy.jikan.Jikan()
     search_result = jikan.search("manga", search_query)
     first_mal_id = search_result["results"][0]["mal_id"]
@@ -546,7 +546,7 @@ async def manga(message):
 async def anime(message):
     search_query = message.pattern_match.group(1)
     await message.get_reply_message()
-    await message.edit("`Searching Anime..`")
+    await message.edit("`Procurando Anime..`")
     jikan = jikanpy.jikan.Jikan()
     search_result = jikan.search("anime", search_query)
     first_mal_id = search_result["results"][0]["mal_id"]
@@ -570,11 +570,11 @@ async def whatanime(e):
         r = await e.get_reply_message()
         media = getattr(r, "media", None)
     if not media:
-        await e.edit("`Media required`")
+        await e.edit("`Mídia necessária`")
         return
     ig = is_gif(media) or is_video(media)
     if not is_image(media) and not ig:
-        await e.edit("`Media must be an image or gif or video`")
+        await e.edit("`A mídia deve ser uma imagem ou gif ou vídeo`")
         return
     filename = "file.jpg"
     if not ig and isinstance(media, MessageMediaDocument):
@@ -583,9 +583,9 @@ async def whatanime(e):
             if isinstance(i, DocumentAttributeFilename):
                 filename = i.file_name
                 break
-    await e.edit("`Downloading image..`")
+    await e.edit("`Baixando imagem..`")
     content = await e.client.download_media(media, bytes, thumb=-1 if ig else None)
-    await e.edit("`Searching for result..`")
+    await e.edit("`Procurando resultados..`")
     file = memory_file(filename, content)
     async with aiohttp.ClientSession() as session:
         url = "https://trace.moe/api/search"
@@ -593,7 +593,7 @@ async def whatanime(e):
             resp0 = await raw_resp0.text()
         js0 = json.loads(resp0)["docs"]
         if not js0:
-            await e.edit("`No results found.`")
+            await e.edit("`Nenhum resultado encontrado.`")
             return
         js0 = js0[0]
         text = f'<b>{html.escape(js0["title_romaji"])}'
@@ -601,11 +601,11 @@ async def whatanime(e):
             text += f' ({html.escape(js0["title_native"])})'
         text += "</b>\n"
         if js0["episode"]:
-            text += f'<b>Episode:</b> {html.escape(str(js0["episode"]))}\n'
+            text += f'<b>Episódio:</b> {html.escape(str(js0["episode"]))}\n'
         percent = round(js0["similarity"] * 100, 2)
-        text += f"<b>Similarity:</b> {percent}%\n"
+        text += f"<b>Semelhança:</b> {percent}%\n"
         dt = pendulum.from_timestamp(js0["at"])
-        text += f"<b>At:</b> {html.escape(dt.to_time_string())}"
+        text += f"<b>Em:</b> {html.escape(dt.to_time_string())}"
         await e.edit(text, parse_mode="html")
         dt0 = pendulum.from_timestamp(js0["from"])
         dt1 = pendulum.from_timestamp(js0["to"])
@@ -624,7 +624,7 @@ async def whatanime(e):
         try:
             await e.reply(ctext, file=file, parse_mode="html")
         except FilePartsInvalidError:
-            await e.reply("`Cannot send preview.`")
+            await e.reply("`Não foi possível enviar visualização.`")
 
 
 def memory_file(name=None, contents=None, *, bytes=True):
@@ -652,20 +652,20 @@ def is_gif(file):
 CMD_HELP.update(
     {
         "anime": ".anime <anime>\
-    \nUso: Returns with Anime information.\
+    \nUso: Obtém informações de Anime.\
     \n\n.manga <manga name>\
-    \nUso: Returns with the Manga information.\
-    \n\n.akaizoku or .akayo <anime name>\
-    \nUso: Returns with the Anime Download link.\
+    \nUso: Obtém as informações do mangá.\
+    \n\n.akaizoku ou .akayo <anime name>\
+    \nUso: Obtém o link de download do Anime.\
     \n\n.char <character name>\
-    \nUso: Return with character information.\
+    \nUso: Obtém informações do personagem.\
     \n\n.upcoming\
-    \nUso: Returns with Upcoming Anime information.\
-    \n\n.scanime <anime> or .sanime <anime>\
-    \nUso: Search anime.\
+    \nUso: Obtém informações sobre o anime que lançará em breve.\
+    \n\n.scanime <anime> ou .sanime <anime>\
+    \nUso: Pesquisar anime.\
     \n\n.smanga <manga>\
-    \nUso: Search manga.\
-    \n\n.whatanime Reply with media.\
-    \nUso: Find anime from media file."
+    \nUso: Pesquisar mangá.\
+    \n\n.whatanime [Resposta a mídia].\
+    \nUso: Encontre o anime no arquivo de mídia."
     }
 )
