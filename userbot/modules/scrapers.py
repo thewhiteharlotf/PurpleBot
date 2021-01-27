@@ -12,11 +12,9 @@ import re
 import shutil
 import time
 from asyncio import sleep
-from re import findall
-from time import sleep
-from urllib.error import HTTPError
 from urllib.parse import quote_plus
 
+import asyncurban
 from bs4 import BeautifulSoup
 from emoji import get_emoji_regexp
 from google_trans_new import LANGUAGES, google_translator
@@ -25,23 +23,16 @@ from gtts.lang import tts_langs
 from requests import get
 from search_engine_parser import GoogleSearch
 from telethon.tl.types import DocumentAttributeAudio
-from urbandict import define
 from wikipedia import summary
 from wikipedia.exceptions import DisambiguationError, PageError
 from youtube_dl import YoutubeDL
-from youtube_dl.utils import (
-    ContentTooShortError,
-    DownloadError,
-    ExtractorError,
-    GeoRestrictedError,
-    MaxDownloadsReached,
-    PostProcessingError,
-    UnavailableVideoError,
-    XAttrMetadataError,
-)
+from youtube_dl.utils import (ContentTooShortError, DownloadError,
+                              ExtractorError, GeoRestrictedError,
+                              MaxDownloadsReached, PostProcessingError,
+                              UnavailableVideoError, XAttrMetadataError)
 from youtube_search import YoutubeSearch
 
-from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP, TEMP_DOWNLOAD_DIRECTORY, WOLFRAM_ID
+from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP
 from userbot.events import register
 from userbot.utils import chrome, googleimagesdownload, progress
 
@@ -57,10 +48,10 @@ async def setlang(prog):
     await prog.edit(f"Idioma para carbon.now.sh definido como {CARBONLANG}")
 
 
-@register(outgoing=True, pattern="^.carbon")
+@register(outgoing=True, pattern=r"^\.carbon")
 async def carbon_api(e):
-    """ Um empacotador para carbon.now.sh """
-    await e.edit("`Processing..`")
+    """ A Wrapper for carbon.now.sh """
+    await e.edit("**Processing...**")
     CARBON = "https://carbon.now.sh/?l={lang}&code={code}"
     global CARBONLANG
     textx = await e.get_reply_message()
@@ -70,38 +61,41 @@ async def carbon_api(e):
     elif textx:
         pcode = str(textx.message)  # Importing message to module
     code = quote_plus(pcode)  # Converting to urlencoded
-    await e.edit("`Processando...\n25%`")
-    file_path = TEMP_DOWNLOAD_DIRECTORY + "carbon.png"
+    await e.edit("**Processando...\n25%**")
+    dl_path = "./.carbon/"
+    file_path = dl_path + "carbon.png"
     if os.path.isfile(file_path):
         os.remove(file_path)
     url = CARBON.format(code=code, lang=CARBONLANG)
     driver = await chrome()
     driver.get(url)
-    await e.edit("`Processando..\n50%`")
-    download_path = "./"
+    await e.edit("**Processando...\n50%**")
     driver.command_executor._commands["send_command"] = (
         "POST",
         "/session/$sessionId/chromium/send_command",
     )
     params = {
         "cmd": "Page.setDownloadBehavior",
-        "params": {"behavior": "allow", "downloadPath": download_path},
+        "params": {
+            "behavior": "allow",
+            "downloadPath": dl_path
+        },
     }
     driver.execute("send_command", params)
     driver.find_element_by_xpath("//button[@id='export-menu']").click()
     driver.find_element_by_xpath("//button[contains(text(),'4x')]").click()
     driver.find_element_by_xpath("//button[contains(text(),'PNG')]").click()
-    await e.edit("`Processando...\n75%`")
+    await e.edit("**Processando...\n75%**")
     # Waiting for downloading
     while not os.path.isfile(file_path):
         await sleep(0.5)
-    await e.edit("`Processando...\n100%`")
-    await e.edit("`Enviando...`")
+    await e.edit("**Processando...\n100%**")
+    await e.edit("**Enviando...**")
     await e.client.send_file(
         e.chat_id,
-        file,
-        caption="Feito com [Carbon](https://carbon.now.sh/about/),\
-        \num projeto por [Dawn Labs](https://dawnlabs.io/)",
+        file_path,
+        caption=("Feito com [Carbon](https://carbon.now.sh/about/),"
+                 "\num projeto por [Dawn Labs](https://dawnlabs.io/)"),
         force_document=True,
         reply_to=e.message.reply_to_msg_id,
     )
