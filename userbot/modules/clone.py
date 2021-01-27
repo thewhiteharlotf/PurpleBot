@@ -1,123 +1,94 @@
 # Copy That Plugin by @ViperAdnan
 # Give credit if you are going to kang it.
 
-import html
-
-from telethon.tl import functions
+from telethon.tl.functions.account import UpdateProfileRequest
+from telethon.tl.functions.photos import (DeletePhotosRequest,
+                                          UploadProfilePhotoRequest)
 from telethon.tl.functions.users import GetFullUserRequest
-from telethon.tl.types import MessageEntityMentionName
+from telethon.tl.types import InputPhoto
 
-from userbot import CMD_HELP, TEMP_DOWNLOAD_DIRECTORY, bot
+from userbot import CMD_HELP, LOGS, STORAGE, bot
 from userbot.events import register
+
+if not hasattr(STORAGE, "userObj"):
+    STORAGE.userObj = False
 
 
 @register(outgoing=True, pattern=r"^\.clone ?(.*)")
-async def _(event):
-    if event.fwd_from:
-        return
-    reply_message = await event.get_reply_message()
-    replied_user, error_i_a = await get_full_user(event)
-    if replied_user is None:
-        await event.edit(str(error_i_a))
-        return False
-    user_id = replied_user.user.id
-    profile_pic = await event.client.download_profile_photo(
-        user_id, TEMP_DOWNLOAD_DIRECTORY
-    )
-    # some people have weird HTML in their names
-    first_name = html.escape(replied_user.user.first_name)
-    # https://stackoverflow.com/a/5072031/4723940
-    # some Deleted Accounts do not have first_name
-    if first_name is not None:
-        # some weird people (like me) have more than 4096 characters in their
-        # names
-        first_name = first_name.replace("\u2060", "")
-    last_name = replied_user.user.last_name
-    # last_name is not Manadatory in @Telegram
-    if last_name is not None:
-        last_name = html.escape(last_name)
-        last_name = last_name.replace("\u2060", "")
-    if last_name is None:
-        last_name = "⁪⁬⁮⁮⁮⁮ ‌‌‌‌"
-    # inspired by https://telegram.dog/afsaI181
-    user_bio = replied_user.about
-    if user_bio is not None:
-        user_bio = html.escape(replied_user.about)
-    await bot(functions.account.UpdateProfileRequest(first_name=first_name))
-    await bot(functions.account.UpdateProfileRequest(last_name=last_name))
-    await bot(functions.account.UpdateProfileRequest(about=user_bio))
-    pfile = await bot.upload_file(profile_pic)  # pylint:disable=E060
-    await bot(functions.photos.UploadProfilePhotoRequest(pfile))  # pylint:disable=E0602
-    # message_id_to_reply = event.message.reply_to_msg_id
-    # if not message_id_to_reply:
-    #    message_id_to_reply = event.message.id
-    # await bot.send_message(
-    #  event.chat_id,
-    #  "Hey ? Whats Up !",
-    #  reply_to=message_id_to_reply,
-    #  )
-    await event.delete()
-    await bot.send_message(event.chat_id, "**SEJAMOS UM SÓ**", reply_to=reply_message)
+async def impostor(event):
+    inputArgs = event.pattern_match.group(1)
 
-
-async def get_full_user(event):
-    if event.reply_to_msg_id:
-        previous_message = await event.get_reply_message()
-        if previous_message.forward:
-            replied_user = await event.client(
-                GetFullUserRequest(
-                    previous_message.forward.from_id
-                    or previous_message.forward.channel_id
-                )
-            )
-            return replied_user, None
-        else:
-            replied_user = await event.client(
-                GetFullUserRequest(previous_message.from_id)
-            )
-            return replied_user, None
-    else:
-        input_str = None
+    if "restore" in inputArgs:
+        await event.edit("**Revertendo à minha verdadeira identidade...**")
+        if not STORAGE.userObj:
+            return await event.edit(
+                "**Você precisa se passar por um perfil antes de reverter!**")
+        await updateProfile(STORAGE.userObj, restore=True)
+        return await event.edit("**Revertido com sucesso!**")
+    elif inputArgs:
         try:
-            input_str = event.pattern_match.group(1)
-        except IndexError as e:
-            return None, e
-        if event.message.entities is not None:
-            mention_entity = event.message.entities
-            probable_user_mention_entity = mention_entity[0]
-            if isinstance(probable_user_mention_entity, MessageEntityMentionName):
-                user_id = probable_user_mention_entity.user_id
-                replied_user = await event.client(GetFullUserRequest(user_id))
-                return replied_user, None
-            else:
-                try:
-                    user_object = await event.client.get_entity(input_str)
-                    user_id = user_object.id
-                    replied_user = await event.client(GetFullUserRequest(user_id))
-                    return replied_user, None
-                except Exception as e:
-                    return None, e
-        elif event.is_private:
-            try:
-                user_id = event.chat_id
-                replied_user = await event.client(GetFullUserRequest(user_id))
-                return replied_user, None
-            except Exception as e:
-                return None, e
-        else:
-            try:
-                user_object = await event.client.get_entity(int(input_str))
-                user_id = user_object.id
-                replied_user = await event.client(GetFullUserRequest(user_id))
-                return replied_user, None
-            except Exception as e:
-                return None, e
+            user = await event.client.get_entity(inputArgs)
+        except:
+            return await event.edit("**Nome de usuário/ID inválido.")
+        userObj = await event.client(GetFullUserRequest(user))
+    elif event.reply_to_msg_id:
+        replyMessage = await event.get_reply_message()
+        if replyMessage.sender_id is None:
+            return await event.edit(
+                "**Não é possível se passar por administradores anônimos, RIP.**")
+        userObj = await event.client(GetFullUserRequest(replyMessage.sender_id)
+                                     )
+    else:
+        return await event.edit(
+            "**Digite** `.help impersonate` **para aprender como usá-lo.**")
+
+    if not STORAGE.userObj:
+        STORAGE.userObj = await event.client(
+            GetFullUserRequest(event.sender_id))
+
+    LOGS.info(STORAGE.userObj)
+
+    await event.edit("**Stealing this random person's identity...**")
+    await updateProfile(userObj)
+    await event.edit("**I am you and you are me.**")
 
 
-CMD_HELP.update(
-    {
-        "cloneuser": "\
-.clone <nome de usuário> ou responda a uma mensagem\
-\nUso: Copia a foto de perfil do alvo,nome...etc e define como seu."
-    }
-)
+async def updateProfile(userObj, restore=False):
+    firstName = "Deleted Account" if userObj.user.first_name is None else userObj.user.first_name
+    lastName = "" if userObj.user.last_name is None else userObj.user.last_name
+    userAbout = userObj.about if userObj.about is not None else ""
+    userAbout = "" if len(userAbout) > 70 else userAbout
+    if restore:
+        userPfps = await bot.get_profile_photos('me')
+        userPfp = userPfps[0]
+        await bot(
+            DeletePhotosRequest(id=[
+                InputPhoto(id=userPfp.id,
+                           access_hash=userPfp.access_hash,
+                           file_reference=userPfp.file_reference)
+            ]))
+    else:
+        try:
+            userPfp = userObj.profile_photo
+            pfpImage = await bot.download_media(userPfp)
+            await bot(
+                UploadProfilePhotoRequest(await bot.upload_file(pfpImage)))
+        except BaseException:
+            pass
+    await bot(
+        UpdateProfileRequest(about=userAbout,
+                             first_name=firstName,
+                             last_name=lastName))
+
+
+CMD_HELP.update({
+    "impostor":
+    ">`.clone` (responda a uma mensagem de um usuário)\
+    \nUso: Rouba a identidade do usuário.\
+    \n\n>`.clone <nome de usuário/ID>`\
+    \nUso: Rouba a identidade do nome de usuário/ID fornecido.\
+    \n\n>`.clone restore`\
+    \nUso: Reverta para sua verdadeira identidade.\
+    \n\n**Sempre restaure antes de executá-lo novamente.**\
+"
+})
