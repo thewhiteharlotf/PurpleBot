@@ -1,6 +1,9 @@
 # Copyright (C) 2019 The Raphielscape Company LLC.
 #
 # Licensed under the Raphielscape Public License, Version 1.d (the "License");
+# Copyright (C) 2019 The Raphielscape Company LLC.
+#
+# Licensed under the Raphielscape Public License, Version 1.c (the "License");
 # you may not use this file except in compliance with the License.
 #
 """ Userbot initialization. """
@@ -8,24 +11,29 @@
 import os
 import re
 import time
-from sys import version_info
-from logging import basicConfig, getLogger, INFO, DEBUG
 from distutils.util import strtobool as sb
+from logging import DEBUG, INFO, basicConfig, getLogger
+from pathlib import Path
+from sys import version_info
 
+from dotenv import load_dotenv
 from pylast import LastFMNetwork, md5
 from pySmartDL import SmartDL
-from dotenv import load_dotenv
 from requests import get
 from telethon import TelegramClient
 from telethon.sessions import StringSession
+
+from .storage import Storage
+
+STORAGE = (lambda n: Storage(Path("data") / n))
 
 load_dotenv("config.env")
 
 StartTime = time.time()
 
 # Bot Logs setup:
-CONSOLE_LOGGER_VERBOSE = sb(os.environ.get(
-    "CONSOLE_LOGGER_VERBOSE") or "False")
+CONSOLE_LOGGER_VERBOSE = sb(
+    os.environ.get("CONSOLE_LOGGER_VERBOSE") or "False")
 
 if CONSOLE_LOGGER_VERBOSE:
     basicConfig(
@@ -33,22 +41,20 @@ if CONSOLE_LOGGER_VERBOSE:
         level=DEBUG,
     )
 else:
-    basicConfig(
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        level=INFO)
+    basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                level=INFO)
 LOGS = getLogger(__name__)
 
 if version_info[0] < 3 or version_info[1] < 8:
-    LOGS.info(
-        "You MUST have a python version of at least 3.8."
-        "Multiple features depend on this. Bot quitting."
-    )
+    LOGS.info("You MUST have a python version of at least 3.8."
+              "Multiple features depend on this. Bot quitting.")
     quit(1)
 
 # Check if the config was edited by using the already used variable.
 # Basically, its the 'virginity check' for the config file ;)
-CONFIG_CHECK = (os.environ.get(
-    "___________PLOX_______REMOVE_____THIS_____LINE__________") or None)
+CONFIG_CHECK = (
+    os.environ.get("___________PLOX_______REMOVE_____THIS_____LINE__________")
+    or None)
 
 if CONFIG_CHECK:
     LOGS.info(
@@ -72,10 +78,7 @@ BOTLOG_CHATID = int(os.environ.get("BOTLOG_CHATID") or 0)
 
 # Userbot logging feature switch.
 BOTLOG = sb(os.environ.get("BOTLOG") or "False")
-if BOTLOG:
-    LOGSPAMMER = sb(os.environ.get("LOGSPAMMER") or "False")
-else:
-    LOGSPAMMER = False
+LOGSPAMMER = sb(os.environ.get("LOGSPAMMER") or "False")
 
 # Bleep Blop, this is a bot ;)
 PM_AUTO_BAN = sb(os.environ.get("PM_AUTO_BAN") or "False")
@@ -91,12 +94,12 @@ GITHUB_ACCESS_TOKEN = os.environ.get("GITHUB_ACCESS_TOKEN") or None
 
 # Custom (forked) repo URL and BRANCH for updater.
 UPSTREAM_REPO_URL = (os.environ.get("UPSTREAM_REPO_URL")
-                     or "https://github.com/thewhiteharlot/PurpleBot.git")
-UPSTREAM_REPO_BRANCH = os.environ.get("UPSTREAM_REPO_BRANCH") or "sql-extended"
+                     or "https://github.com/thewhiteharlot/purplealpha.git")
+UPSTREAM_REPO_BRANCH = os.environ.get("UPSTREAM_REPO_BRANCH") or "purplealpha"
 
 # Console verbose logging
-CONSOLE_LOGGER_VERBOSE = sb(os.environ.get(
-    "CONSOLE_LOGGER_VERBOSE") or "False")
+CONSOLE_LOGGER_VERBOSE = sb(
+    os.environ.get("CONSOLE_LOGGER_VERBOSE") or "False")
 
 # SQL Database URI
 DB_URI = os.environ.get("DATABASE_URL") or None
@@ -127,7 +130,7 @@ ANTI_SPAMBOT = sb(os.environ.get("ANTI_SPAMBOT") or "False")
 ANTI_SPAMBOT_SHOUT = sb(os.environ.get("ANTI_SPAMBOT_SHOUT") or "False")
 
 # Default .alive name
-ALIVE_NAME = os.environ.get("ALIVE_NAME") or None
+ALIVE_NAME = str(os.environ.get("ALIVE_NAME")) or None
 
 # Default .alive logo
 ALIVE_LOGO = os.environ.get("ALIVE_LOGO") or None
@@ -136,14 +139,14 @@ ALIVE_LOGO = os.environ.get("ALIVE_LOGO") or None
 COUNTRY = str(os.environ.get("COUNTRY") or "")
 TZ_NUMBER = int(os.environ.get("TZ_NUMBER") or 1)
 
-# Version of PurpleBot
-USERBOT_VERSION = os.environ.get("USERBOT_VERSION") or "4.6"
+# Version of One4uBot
+USERBOT_VERSION = os.environ.get("USERBOT_VERSION") or "4.2"
 
 # User Terminal alias
-USER_TERM_ALIAS = os.environ.get("USER_TERM_ALIAS") or "PurpleBot"
+USER_TERM_ALIAS = os.environ.get("USER_TERM_ALIAS") or "purplealpha"
 
 # Updater alias
-UPDATER_ALIAS = os.environ.get("UPDATER_ALIAS") or "PurpleBot"
+UPDATER_ALIAS = os.environ.get("UPDATER_ALIAS") or "purplealpha"
 
 # Zipfile module
 ZIP_DOWNLOAD_DIRECTORY = os.environ.get("ZIP_DOWNLOAD_DIRECTORY") or "./zips"
@@ -160,7 +163,7 @@ LASTFM_SECRET = os.environ.get("LASTFM_SECRET") or None
 LASTFM_USERNAME = os.environ.get("LASTFM_USERNAME") or None
 LASTFM_PASSWORD_PLAIN = os.environ.get("LASTFM_PASSWORD") or None
 LASTFM_PASS = md5(LASTFM_PASSWORD_PLAIN)
-if LASTFM_API is not None:
+if LASTFM_API and LASTFM_SECRET and LASTFM_USERNAME and LASTFM_PASS:
     lastfm = LastFMNetwork(
         api_key=LASTFM_API,
         api_secret=LASTFM_SECRET,
@@ -177,7 +180,10 @@ G_DRIVE_CLIENT_SECRET = os.environ.get("G_DRIVE_CLIENT_SECRET") or None
 G_DRIVE_AUTH_TOKEN_DATA = os.environ.get("G_DRIVE_AUTH_TOKEN_DATA") or None
 G_DRIVE_FOLDER_ID = os.environ.get("G_DRIVE_FOLDER_ID") or None
 TEMP_DOWNLOAD_DIRECTORY = os.environ.get(
-    "TMP_DOWNLOAD_DIRECTORY") or "./downloads"
+    "TMP_DOWNLOAD_DIRECTORY") or "./downloads/"
+
+# Terminal Alias
+TERM_ALIAS = os.environ.get("TERM_ALIAS") or None
 
 # Uptobox
 USR_TOKEN = os.environ.get("USR_TOKEN_UPTOBOX", None)
@@ -208,7 +214,19 @@ else:
 
 
 async def check_botlog_chatid():
-    if not BOTLOG:
+    if not BOTLOG_CHATID and LOGSPAMMER:
+        LOGS.info(
+            "You must set up the BOTLOG_CHATID variable in the config.env or environment variables, for the private error log storage to work."
+        )
+        quit(1)
+
+    elif not BOTLOG_CHATID and BOTLOG:
+        LOGS.info(
+            "You must set up the BOTLOG_CHATID variable in the config.env or environment variables, for the userbot logging feature to work."
+        )
+        quit(1)
+
+    elif not (BOTLOG and LOGSPAMMER):
         return
 
     entity = await bot.get_entity(BOTLOG_CHATID)
@@ -225,8 +243,7 @@ with bot:
     except BaseException:
         LOGS.info(
             "BOTLOG_CHATID environment variable isn't a "
-            "valid entity. Check your environment variables/config.env file."
-        )
+            "valid entity. Check your environment variables/config.env file.")
         quit(1)
 
 # Global Variables
