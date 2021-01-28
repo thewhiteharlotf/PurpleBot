@@ -24,7 +24,10 @@ from userbot import ALIVE_LOGO, ALIVE_NAME, CMD_HELP, USERBOT_VERSION, StartTime
 from userbot.events import register
 
 # ================= CONSTANT =================
-DEFAULTUSER = ALIVE_NAME or "Defina um `ALIVE_NAME` ConfigVar no Heroku (.set var ALIVE_NAME [Nome])!"
+DEFAULTUSER = (
+    ALIVE_NAME
+    or "Defina um `ALIVE_NAME` ConfigVar no Heroku (.set var ALIVE_NAME [Nome])!"
+)
 repo = Repo()
 modules = CMD_HELP
 # ============================================
@@ -259,7 +262,6 @@ async def amireallyalive(alive):
 async def amireallyaliveuser(username):
     """ For .aliveu command, change the username in the .alive command. """
     message = username.text
-    output = ".aliveu [novo usuário sem colchetes] nem pode estar vazio"
     if not (message == ".aliveu" or message[7:8] != " "):
         newuser = message[8:]
         global DEFAULTUSER
