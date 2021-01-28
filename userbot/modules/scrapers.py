@@ -14,7 +14,6 @@ import time
 from asyncio import sleep
 from urllib.parse import quote_plus
 
-import asyncurban
 from bs4 import BeautifulSoup
 from emoji import get_emoji_regexp
 from google_trans_new import LANGUAGES, google_translator
