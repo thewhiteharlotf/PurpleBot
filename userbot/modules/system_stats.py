@@ -24,7 +24,7 @@ from userbot import ALIVE_LOGO, ALIVE_NAME, CMD_HELP, USERBOT_VERSION, StartTime
 from userbot.events import register
 
 # ================= CONSTANT =================
-DEFAULTUSER = str(ALIVE_NAME) if ALIVE_NAME else uname().node
+DEFAULTUSER = ALIVE_NAME or "Defina um `ALIVE_NAME` ConfigVar no Heroku (.set var ALIVE_NAME [Nome])!"
 repo = Repo()
 modules = CMD_HELP
 # ============================================
@@ -137,7 +137,7 @@ async def sysdetails(sysd):
 
             await sysd.edit("`" + result + "`")
         except FileNotFoundError:
-            await sysd.edit("`Instale o neofetch primeiro !!`")
+            await sysd.edit("**Instale o neofetch primeiro !!**")
 
 
 @register(outgoing=True, pattern="^.botver$")
@@ -182,7 +182,7 @@ async def pipcheck(pip):
     if not pip.text[0].isalpha() and pip.text[0] not in ("/", "#", "@", "!"):
         pipmodule = pip.pattern_match.group(1)
         if pipmodule:
-            await pip.edit("`Procurando . . .`")
+            await pip.edit("**Procurando...**")
             pipc = await asyncrunapp(
                 "pip3",
                 "search",
@@ -196,7 +196,7 @@ async def pipcheck(pip):
 
             if pipout:
                 if len(pipout) > 4096:
-                    await pip.edit("`Resultado muito grande, enviando como arquivo`")
+                    await pip.edit("**Resultado muito grande, enviando como arquivo**")
                     file = open("output.txt", "w+")
                     file.write(pipout)
                     file.close()
@@ -221,7 +221,7 @@ async def pipcheck(pip):
                     "`\n**Resultado: **\n`Nenhum resultado encontrado/falso`"
                 )
         else:
-            await pip.edit("`Use .help pip para ver um exemplo`")
+            await pip.edit("**Use .help pip para ver um exemplo**")
 
 
 @register(outgoing=True, pattern=r"^.(alive|on)$")
@@ -264,8 +264,7 @@ async def amireallyaliveuser(username):
         newuser = message[8:]
         global DEFAULTUSER
         DEFAULTUSER = newuser
-        output = "Usuário alterado com sucesso para " + newuser + "!"
-    await username.edit("`" f"{output}" "`")
+    await username.edit(f"**Usuário alterado com sucesso para** `{newuser}` **!**")
 
 
 @register(outgoing=True, pattern="^.resetalive$")
@@ -273,7 +272,7 @@ async def amireallyalivereset(ureset):
     """ For .resetalive command, reset the username in the .alive command. """
     global DEFAULTUSER
     DEFAULTUSER = str(ALIVE_NAME) if ALIVE_NAME else uname().node
-    await ureset.edit("`" "Usuário redefinido com sucesso para .alive/on!" "`")
+    await ureset.edit("**" "Usuário redefinido com sucesso para .alive/on!" "**")
 
 
 CMD_HELP.update(
