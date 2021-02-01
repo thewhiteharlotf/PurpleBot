@@ -152,7 +152,7 @@ UPDATER_ALIAS = os.environ.get("UPDATER_ALIAS") or "PurpleBot"
 ZIP_DOWNLOAD_DIRECTORY = os.environ.get("ZIP_DOWNLOAD_DIRECTORY") or "./zips"
 
 # Clean Welcome
-CLEAN_WELCOME = sb(os.environ.get("CLEAN_WELCOME") or "True")
+CLEAN_WELCOME = sb(os.environ.get("CLEAN_WELCOME") or "False")
 
 # Last.fm Module
 BIO_PREFIX = os.environ.get("BIO_PREFIX") or None

@@ -9,4 +9,3 @@ userbot/modules/sql_helper/__pycache__/*
 .progress
 .vscode/*
 bin/*
-userbot/modules/scrapers.py

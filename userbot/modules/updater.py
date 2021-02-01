@@ -222,8 +222,8 @@ CMD_HELP.update(
         "update": ".update"
         "\nUso: Checa se o repositório tem atualizações e mostra lista de mudanças."
         "\n\n.update now"
-        "\nUso: Atualiza seu userbot, caso hajam alterações no repositório. (As mudanças serão revertidas no próximo update, dê preferência ao Deploy)"
+        "\nUso: Atualiza seu userbot, caso hajam alterações no repositório.\n(As mudanças serão revertidas no próximo update, dê preferência ao Deploy)"
         "\n\n.update deploy"
-        "\nUso: Atualiza seu userbot no heroku, caso hajam alterações no repositório (Recomendado)."
+        "\nUso: Atualiza seu userbot no heroku, caso hajam alterações no repositório\n(Recomendado)."
     }
 )
