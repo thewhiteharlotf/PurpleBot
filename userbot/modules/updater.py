@@ -166,7 +166,7 @@ async def upstream(event):
             f"`Parece que você está tentando usar uma branch personalizada ({ac_br}). "
             "nesse caso, o atualizador não pode verificar "
             "qual branch deve ser atualizada. "
-            "por favor, verifique a branch principal`"
+            "por favor, mude para a branch principal`"
         )
         return repo.__del__()
     try:

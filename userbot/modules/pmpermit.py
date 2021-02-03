@@ -298,6 +298,7 @@ async def disapprovepm(disapprvpm):
 
             return await disapprvpm.edit("**Isso pode ser feito apenas com usuários.**")
         name0 = str(aname.first_name)
+        aname = aname.id
 
     await disapprvpm.edit(
         f"[{name0}](tg://user?id={aname}) **Proibido de enviar PMs!**"
