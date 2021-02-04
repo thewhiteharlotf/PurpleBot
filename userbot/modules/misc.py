@@ -75,14 +75,13 @@ async def killdabot(reboot):
 @register(outgoing=True, pattern="^.readme$")
 async def reedme(event):
     await event.edit(
-        "Aqui está algo para se ler:\n"
+        "Aqui estão alguns tutoriais interessantes:\n"
         "\n[Arquivo Readme do PurpleBot](https://github.com/thewhiteharlot/PurpleBot/blob/sql-extended/README.md)"
-        "\n[Guia de configuração - Basic/Inglês](https://telegra.ph/How-to-host-a-Telegram-Userbot-07-01-2)"
-        "\n[Guia de configuração - Google Drive/Inglês](https://telegra.ph/How-To-Setup-Google-Drive-04-03)"
-        "\n[Guia de configuração - LastFM Module/Inglês](https://telegra.ph/How-to-set-up-LastFM-module-for-Paperplane-userbot-11-02)"
-        "\n[Guia de configuração - From MiHub with Pict/Inglês](https://www.mihub.my.id/2020/05/jadiuserbot.html)"
-        "\n[Replit para gerar a String Session](https://repl.it/@MoveAngel/UserbotSession?lite=1&outputonly=1)"
-        "\n*Após entrar no Replit, clique no botão verde 'run' para executar"
+        "\n[Guia de configuração - Bot](https://www.youtube.com/watch?v=SBYjQ25ugZY&feature=emb_title&ab_channel=TUDOSEMCORTE)"
+        "\n[Guia de configuração - Google Drive](https://www.youtube.com/watch?v=Z0WFtwDMnes&ab_channel=TUDOSEMCORTE)"
+        "\n[Guia de configuração - LastFM](https://telegra.ph/Tutorial-LastFM-02-04-2)"
+        "\n[Replit para gerar a String Session](https://repl.it/@kenhv/sessiongen)"
+        "\n*Após entrar no Replit, clique no botão verde para executar"
     )
 
 
