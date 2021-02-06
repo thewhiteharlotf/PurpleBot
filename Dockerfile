@@ -1,12 +1,8 @@
-FROM kenhv/kensurbot:alpine
+FROM sahyam/docker:groovy
 
-RUN mkdir /PurpleBot && chmod 777 /PurpleBot
-ENV PATH="/PurpleBot/bin:$PATH"
-WORKDIR /PurpleBot
-
-RUN git clone https://github.com/thewhiteharlot/PurpleBot -b sql-extended /PurpleBot
-
-COPY ./sample_config.env ./userbot.session* ./config.env* /PurpleBot/
+RUN git clone -b sql-extended https://github.com/thewhiteharlot/PurpleBot /root/userbot
+RUN chmod 777 /root/userbot
+WORKDIR /root/userbot/
 
 EXPOSE 80 443
 

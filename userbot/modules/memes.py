@@ -2384,16 +2384,16 @@ async def tghack(event):
     if event.fwd_from:
         return
     animation_interval = 2
-    animation_ttl = range(0, 16)
+    animation_ttl = range(0, 21)
     animation_chars = [
         "```Conectando ao Servidor \\```",
         "```Conectando ao Servidor |```",
         "```Conectando ao Metasploit /```",
         "```Conectando ao Hashcat \\```",
         "```Conexão estabelecida | ```",
-        " Iniciando ataque com Bruteforce / ",
-        " Checando status do MetaSploit/Hashcat \\ ",
-        " Conectando MetaSploit! Começando ataque Bruteforce",
+        "Iniciando ataque com Bruteforce / ",
+        "Checando status do MetaSploit/Hashcat \\ ",
+        "Conectando MetaSploit! Começando ataque Bruteforce",
         "Hackeando... 0%\n[░░░░░░░░░░░░░░░░░░░░]\n`Port WHOIS/TCP [43] aberta...`\n",
         "Hackeando... 12.07%\n[██░░░░░░░░░░░░░░░░░░]\n`Local Port [36662] encontrada...`\n",
         "Hackeando... 23.63%\n[███░░░░░░░░░░░░░░░░░]\n`Obtendo informações da conta do usuário`\n",
@@ -2410,7 +2410,7 @@ async def tghack(event):
     ]
     for i in animation_ttl:
         await sleep(animation_interval)
-        await event.edit(animation_chars[i % 16])
+        await event.edit(animation_chars[i % 21])
 
 
 # Author: @Jisan7509
