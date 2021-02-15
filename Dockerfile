@@ -1,4 +1,4 @@
-FROM sahyam/docker:groovy
+FROM movecrew/one4ubot:alpine-latest
 
 RUN git clone -b sql-extended https://github.com/thewhiteharlot/PurpleBot /root/userbot
 RUN chmod 777 /root/userbot
