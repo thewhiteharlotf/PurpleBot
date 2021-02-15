@@ -96,8 +96,8 @@ GITHUB_ACCESS_TOKEN = os.environ.get("GITHUB_ACCESS_TOKEN") or None
 
 # Custom (forked) repo URL and BRANCH for updater.
 UPSTREAM_REPO_URL = (os.environ.get("UPSTREAM_REPO_URL")
-                     or "https://github.com/thewhiteharlot/purplealpha.git")
-UPSTREAM_REPO_BRANCH = os.environ.get("UPSTREAM_REPO_BRANCH") or "purplealpha"
+                     or "https://github.com/thewhiteharlot/purplebot.git")
+UPSTREAM_REPO_BRANCH = os.environ.get("UPSTREAM_REPO_BRANCH") or "purplebot"
 
 # Console verbose logging
 CONSOLE_LOGGER_VERBOSE = sb(
@@ -142,13 +142,13 @@ COUNTRY = str(os.environ.get("COUNTRY") or "")
 TZ_NUMBER = int(os.environ.get("TZ_NUMBER") or 1)
 
 # Version of PurpleBot
-USERBOT_VERSION = os.environ.get("USERBOT_VERSION") or "4x-Alpha"
+USERBOT_VERSION = os.environ.get("USERBOT_VERSION") or "4.8"
 
 # User Terminal alias
-USER_TERM_ALIAS = os.environ.get("USER_TERM_ALIAS") or "Purple [alpha]"
+USER_TERM_ALIAS = os.environ.get("USER_TERM_ALIAS") or "PurpleBot"
 
 # Updater alias
-UPDATER_ALIAS = os.environ.get("UPDATER_ALIAS") or "Purple [alpha]"
+UPDATER_ALIAS = os.environ.get("UPDATER_ALIAS") or "PurpleBot"
 
 # Zipfile module
 ZIP_DOWNLOAD_DIRECTORY = os.environ.get("ZIP_DOWNLOAD_DIRECTORY") or "./zips"
