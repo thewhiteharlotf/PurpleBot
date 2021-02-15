@@ -180,9 +180,7 @@ async def upstream(event):
     changelog = await gen_chlog(repo, f"HEAD..upstream/{ac_br}")
 
     if changelog == "" and force_update is False:
-        await event.edit(
-            f"\n`{UPDATER_ALIAS} está`  **atualizado**\n"
-        )
+        await event.edit(f"\n`{UPDATER_ALIAS} está`  **atualizado**\n")
         return repo.__del__()
 
     if conf is None and force_update is False:
