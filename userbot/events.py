@@ -1,6 +1,6 @@
 # Copyright (C) 2019 The Raphielscape Company LLC.
 #
-# Licensed under the Raphielscape Public License, Version 1.d (the "License");
+# Licensed under the Raphielscape Public License, Version 1.c (the "License");
 # you may not use this file except in compliance with the License.
 #
 """ Userbot module for managing events.
@@ -15,7 +15,7 @@ from traceback import format_exc
 
 from telethon import events
 
-from userbot import LOGSPAMMER, bot
+from userbot import BOTLOG_CHATID, LOGS, LOGSPAMMER, bot
 
 
 def register(**args):
@@ -69,7 +69,7 @@ def register(**args):
                 return
 
             if groups_only and not check.is_group:
-                await check.respond("`I don"t think this is a group.`")
+                await check.respond("`I don't think this is a group.`")
                 return
 
             if check.via_bot_id and not insecure and check.out:
@@ -88,29 +88,27 @@ def register(**args):
             # spam chats
             except KeyboardInterrupt:
                 pass
-            except BaseException:
+            except BaseException as e:
 
-                # Check if we have to disable it.
-                # If not silence the log spam on the console,
-                # with a dumb except.
-
+                # Check if we have to disable error logging.
                 if not disable_errors:
+                    LOGS.exception(e)  # Log the error in console
+
                     date = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
                     text = "**USERBOT ERROR REPORT**\n"
-                    link = "[Userbot Indo Support](https://t.me/userbotindo)"
+                    link = "[Support Chat](https://t.me/KensurOT)"
                     text += "If you want to, you can report it"
-                    text += f". Head and forward this message to {link}.\n"
-                    text += "Nothing is logged except the fact of error and date\n"
+                    text += f"- just forward this message to {link}.\n"
+                    text += "I won't log anything except the fact of error and date\n"
 
-                    ftext = "========== DISCLAIMER =========="
-                    ftext += "\nThis file uploaded ONLY here,"
-                    ftext += "\nwe logged only fact of error and date,"
-                    ftext += "\nwe respect your privacy,"
-                    ftext += "\nyou may not report this error if you"ve"
-                    ftext += "\nany confidential data here, no one will see your data\n"
-                    ftext += "================================\n\n"
-                    ftext += "--------BEGIN USERBOT TRACEBACK LOG--------\n"
+                    ftext = "\nDisclaimer:\nThis file uploaded ONLY here, "
+                    ftext += "we logged only fact of error and date, "
+                    ftext += "we respect your privacy, "
+                    ftext += "you may not report this error if you've "
+                    ftext += "any confidential data here, no one will see your data "
+                    ftext += "if you choose not to do so.\n\n"
+                    ftext += "--------BEGIN USERBOT TRACEBACK LOG--------"
                     ftext += "\nDate: " + date
                     ftext += "\nChat ID: " + str(check.chat_id)
                     ftext += "\nSender ID: " + str(check.sender_id)
@@ -122,16 +120,15 @@ def register(**args):
                     ftext += str(sys.exc_info()[1])
                     ftext += "\n\n--------END USERBOT TRACEBACK LOG--------"
 
-                    command = "git log --pretty=format:\"%an: %s\" -10"
+                    command = 'git log --pretty=format:"%an: %s" -10'
 
                     ftext += "\n\n\nLast 10 commits:\n"
 
-                    process = await asyncsubshell(command,
-                                                  stdout=asyncsub.PIPE,
-                                                  stderr=asyncsub.PIPE)
+                    process = await asyncsubshell(
+                        command, stdout=asyncsub.PIPE, stderr=asyncsub.PIPE
+                    )
                     stdout, stderr = await process.communicate()
-                    result = str(stdout.decode().strip()) \
-                        + str(stderr.decode().strip())
+                    result = str(stdout.decode().strip()) + str(stderr.decode().strip())
 
                     ftext += result
 
@@ -139,15 +136,19 @@ def register(**args):
                     file.write(ftext)
                     file.close()
 
-                    # if LOGSPAMMER:
-                    #    await check.respond(
-                    #        "`Sorry, my userbot has crashed.\
-                    #    \nThe error logs are stored in the userbot"s log chat.`"
-                    #    )
+                    if LOGSPAMMER:
+                        await check.client.send_file(
+                            BOTLOG_CHATID,
+                            "error.log",
+                            caption=text,
+                        )
+                    else:
+                        await check.client.send_file(
+                            check.chat_id,
+                            "error.log",
+                            caption=text,
+                        )
 
-                    # await check.client.send_file(send_to,
-                    #                             "error.log",
-                    #                             caption=text)
                     remove("error.log")
             else:
                 pass
