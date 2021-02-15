@@ -46,6 +46,7 @@ Certifique-se de ter uma conta do heroku e siga todos os passos necessários.
 
 ## Créditos
 
+* [KenHV](https://github.com/KenHV) - KensurBot
 * [RaphielGang](https://github.com/RaphielGang) - Telegram-Paperplane
 * [AvinashReddy3108](https://github.com/AvinashReddy3108) - PaperplaneExtended
 * [kandnub](https://github.com/kandnub) - TG-UserBot
