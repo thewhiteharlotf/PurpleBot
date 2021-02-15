@@ -485,8 +485,8 @@ async def get_anime(message):
         telegraph_poster = main_poster
 
     genress_md = "".join(f"{i['name']} " for i in genres_list)
-    producer_md = "".join(f"[{i['name']}]({i['url']}) " for i in producer_list)
-    studio_md = "".join(f"[{i['name']}]({i['url']}) " for i in studios_list)
+    "".join(f"[{i['name']}]({i['url']}) " for i in producer_list)
+    "".join(f"[{i['name']}]({i['url']}) " for i in studios_list)
     # Build synopsis telegraph post
     html_enc = ""
     html_enc += f"<img src = '{telegraph_poster}' title = {anime_title}/>"
@@ -628,10 +628,7 @@ def is_gif(file):
     # lazy to go to github and make an issue kek
     if not is_video(file):
         return False
-    return (
-        DocumentAttributeAnimated()
-        in getattr(file, "document", file).attributes
-    )
+    return DocumentAttributeAnimated() in getattr(file, "document", file).attributes
 
 
 CMD_HELP.update(
