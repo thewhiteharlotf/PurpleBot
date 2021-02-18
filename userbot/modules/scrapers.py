@@ -203,7 +203,8 @@ async def gsearch(event):
 
     if not match:
         return await event.edit(
-            "**Responda a uma mensagem ou passe uma consulta para pesquisar!**")
+            "**Responda a uma mensagem ou passe uma consulta para pesquisar!**"
+        )
 
     await event.edit("**Processando...**")
 
@@ -236,9 +237,10 @@ async def gsearch(event):
         except IndexError:
             break
 
-    await event.edit("**Consulta de pesquisa:**\n`" + match + "`\n\n**Resultados:**\n" +
-                     msg,
-                     link_preview=False)
+    await event.edit(
+        "**Consulta de pesquisa:**\n`" + match + "`\n\n**Resultados:**\n" + msg,
+        link_preview=False,
+    )
 
     if BOTLOG:
         await event.client.send_message(
