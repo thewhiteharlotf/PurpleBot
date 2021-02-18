@@ -39,9 +39,12 @@ async def permitpm(event):
     if not PM_AUTO_BAN:
         return
     self_user = await event.client.get_me()
-    if (event.is_private and event.chat_id != 777000
-            and event.chat_id != self_user.id
-            and not (await event.get_sender()).bot):
+    if (
+        event.is_private
+        and event.chat_id != 777000
+        and event.chat_id != self_user.id
+        and not (await event.get_sender()).bot
+    ):
         try:
             from userbot.modules.sql_helper.globals import gvarstatus
             from userbot.modules.sql_helper.pm_permit_sql import is_approved
@@ -63,8 +66,8 @@ async def permitpm(event):
                 # Send the Unapproved Message again
                 if event.text != prevmsg:
                     async for message in event.client.iter_messages(
-                            event.chat_id, from_user="me",
-                            search=UNAPPROVED_MSG):
+                        event.chat_id, from_user="me", search=UNAPPROVED_MSG
+                    ):
                         await message.delete()
                     await event.reply(f"`{UNAPPROVED_MSG}`")
             else:
@@ -233,9 +236,9 @@ async def approvepm(apprvpm):
     # Get user custom msg
     getmsg = gvarstatus("unapproved_msg")
     UNAPPROVED_MSG = getmsg if getmsg is not None else DEF_UNAPPROVED_MSG
-    async for message in apprvpm.client.iter_messages(apprvpm.chat_id,
-                                                      from_user='me',
-                                                      search=UNAPPROVED_MSG):
+    async for message in apprvpm.client.iter_messages(
+        apprvpm.chat_id, from_user="me", search=UNAPPROVED_MSG
+    ):
         await message.delete()
 
     try:
