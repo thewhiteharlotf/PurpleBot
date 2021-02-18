@@ -191,22 +191,43 @@ async def moni(event):
         return
 
 
-@register(outgoing=True, pattern=r"^.google (.*)")
-async def gsearch(q_event):
-    """ Para o comando .google, faz uma pesquisa no Google. """
-    match = q_event.pattern_match.group(1)
-    page = findall(r"page=\d+", match)
-    try:
-        page = page[0]
-        page = page.replace("page=", "")
-        match = match.replace("page=" + page[0], "")
-    except IndexError:
-        page = 1
-    search_args = (str(match), int(page))
+@register(outgoing=True, pattern=r"^\.google(?: |$)(\d*)? ?(.*)")
+async def gsearch(event):
+    """ For .google command, do a Google search. """
+
+    if event.is_reply and not event.pattern_match.group(2):
+        match = await event.get_reply_message()
+        match = str(match.message)
+    else:
+        match = str(event.pattern_match.group(2))
+
+    if not match:
+        return await event.edit(
+            "**Responda a uma mensagem ou passe uma consulta para pesquisar!**")
+
+    await event.edit("**Processando...**")
+
+    if event.pattern_match.group(1) != "":
+        counter = int(event.pattern_match.group(1))
+        if counter > 10:
+            counter = int(10)
+        if counter <= 0:
+            counter = int(1)
+    else:
+        counter = int(3)
+
+    search_args = (str(match), int(1))
     gsearch = GoogleSearch()
-    gresults = await gsearch.async_search(*search_args)
+
+    try:
+        gresults = await gsearch.async_search(*search_args)
+    except Exception:
+        return await event.edit(
+            "**Erro: sua consulta não foi encontrada ou foi sinalizada como tráfego incomum.**"
+        )
     msg = ""
-    for i in range(10):
+
+    for i in range(counter):
         try:
             title = gresults["titles"][i]
             link = gresults["links"][i]
@@ -214,15 +235,15 @@ async def gsearch(q_event):
             msg += f"[{title}]({link})\n`{desc}`\n\n"
         except IndexError:
             break
-    await q_event.edit(
-        "**Consulta de Pesquisa:**\n`" + match + "`\n\n**Resultados:**\n" + msg,
-        link_preview=False,
-    )
+
+    await event.edit("**Consulta de pesquisa:**\n`" + match + "`\n\n**Resultados:**\n" +
+                     msg,
+                     link_preview=False)
 
     if BOTLOG:
-        await q_event.client.send_message(
+        await event.client.send_message(
             BOTLOG_CHATID,
-            "Consulta de pesquisa do Google `" + match + "` foi executado com sucesso",
+            "Consulta de pesquisa do Google` " + match + " `foi executado com sucesso",
         )
 
 
