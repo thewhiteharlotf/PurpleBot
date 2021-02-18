@@ -39,12 +39,9 @@ async def permitpm(event):
     if not PM_AUTO_BAN:
         return
     self_user = await event.client.get_me()
-    if (
-        event.is_private
-        and event.chat_id != 777000
-        and event.chat_id != self_user.id
-        and not (await event.get_sender()).bot
-    ):
+    if (event.is_private and event.chat_id != 777000
+            and event.chat_id != self_user.id
+            and not (await event.get_sender()).bot):
         try:
             from userbot.modules.sql_helper.globals import gvarstatus
             from userbot.modules.sql_helper.pm_permit_sql import is_approved
@@ -55,11 +52,7 @@ async def permitpm(event):
 
         # Use user custom unapproved message
         getmsg = gvarstatus("unapproved_msg")
-        if getmsg is not None:
-            UNAPPROVED_MSG = getmsg
-        else:
-            UNAPPROVED_MSG = DEF_UNAPPROVED_MSG
-
+        UNAPPROVED_MSG = getmsg if getmsg is not None else DEF_UNAPPROVED_MSG
         # This part basically is a sanity check
         # If the message that sent before is Unapproved Message
         # then stop sending it again to prevent FloodHit
@@ -70,8 +63,8 @@ async def permitpm(event):
                 # Send the Unapproved Message again
                 if event.text != prevmsg:
                     async for message in event.client.iter_messages(
-                        event.chat_id, from_user="me", search=UNAPPROVED_MSG
-                    ):
+                            event.chat_id, from_user="me",
+                            search=UNAPPROVED_MSG):
                         await message.delete()
                     await event.reply(f"`{UNAPPROVED_MSG}`")
             else:
@@ -84,7 +77,7 @@ async def permitpm(event):
             else:
                 COUNT_PM[event.chat_id] = COUNT_PM[event.chat_id] + 1
 
-            if COUNT_PM[event.chat_id] > 4:
+            if COUNT_PM[event.chat_id] > 3:
                 await event.respond(
                     "`Você está spammando meu PM, o que não é permitido.`\n"
                     "`Não permitirei que mande mensagens novamente até aviso prévio `\n"
@@ -100,7 +93,7 @@ async def permitpm(event):
                             BOTLOG_CHATID,
                             "Contador de PM está aparentemente ficando lento, plis reinicie o bot!",
                         )
-                    LOGS.info("CountPM wen't rarted boi")
+                    LOGS.info("Erro no contador de PMs!")
                     return
 
                 await event.client(BlockRequest(event.chat_id))
@@ -198,12 +191,12 @@ async def notifon(non_event):
 
 @register(outgoing=True, pattern=r"^\.approve(?:$| )(.*)")
 async def approvepm(apprvpm):
-    """ Para o comando .approve, dê a alguém as permissões para enviar um PM para você. """
+    """ For .approve command, give someone the permissions to PM you. """
     try:
         from userbot.modules.sql_helper.globals import gvarstatus
         from userbot.modules.sql_helper.pm_permit_sql import approve
     except AttributeError:
-        return await apprvpm.edit("**Executando em modo não-SQL!**")
+        return await apprvpm.edit("**Executando em modo Não-SQL!**")
 
     if apprvpm.reply_to_msg_id:
         reply = await apprvpm.get_reply_message()
@@ -222,9 +215,11 @@ async def approvepm(apprvpm):
         try:
             user = await apprvpm.client.get_entity(inputArgs)
         except:
-            return await apprvpm.edit("**ID/Nome de usuário inválido.**")
+            return await apprvpm.edit("**Nome de usuário/ID inválido.**")
+
         if not isinstance(user, User):
             return await apprvpm.edit("**Isso pode ser feito apenas com usuários.**")
+
         uid = user.id
         name0 = str(user.first_name)
 
@@ -238,17 +233,17 @@ async def approvepm(apprvpm):
     # Get user custom msg
     getmsg = gvarstatus("unapproved_msg")
     UNAPPROVED_MSG = getmsg if getmsg is not None else DEF_UNAPPROVED_MSG
-    async for message in apprvpm.client.iter_messages(
-        apprvpm.chat_id, from_user="me", search=UNAPPROVED_MSG
-    ):
+    async for message in apprvpm.client.iter_messages(apprvpm.chat_id,
+                                                      from_user='me',
+                                                      search=UNAPPROVED_MSG):
         await message.delete()
 
     try:
         approve(uid)
     except IntegrityError:
-        return await apprvpm.edit("**O usuário já deve estar permitido.**")
+        return await apprvpm.edit("**O usuário já está aprovado.**")
 
-    await apprvpm.edit(f"[{name0}](tg://user?id={uid}) **permitido de enviar PMs!**")
+    await apprvpm.edit(f"[{name0}](tg://user?id={uid}) **aprovado para PV!**")
 
     if BOTLOG:
         await apprvpm.client.send_message(
